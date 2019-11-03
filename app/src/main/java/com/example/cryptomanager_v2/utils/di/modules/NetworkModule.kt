@@ -3,6 +3,7 @@ package com.example.cryptomanager_v2.utils.di.modules
 import com.example.cryptomanager_v2.data.ExchangeRatesApi
 import com.example.cryptomanager_v2.utils.di.AppSchedulers
 import com.example.cryptomanager_v2.utils.di.Constants
+import com.google.gson.Gson
 import dagger.Module
 import dagger.Provides
 import dagger.Reusable
@@ -52,6 +53,13 @@ object NetworkModule {
             .addConverterFactory(gsonConverterFactory)
             .addCallAdapterFactory(rxJava2CallAdapterFactory)
             .build()
+    }
+
+    @Provides
+    @Singleton
+    @JvmStatic
+    internal fun providesGson(): Gson {
+        return Gson()
     }
 
     @Provides

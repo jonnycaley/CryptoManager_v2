@@ -8,49 +8,58 @@ import com.example.cryptomanager_v2.data.ExchangeRatesApi
 import com.example.cryptomanager_v2.data.db.AppDatabase
 import com.example.cryptomanager_v2.data.model.ExchangeRates.ExchangeRatesOld
 import com.example.cryptomanager_v2.utils.di.AppSchedulers
+import com.google.gson.Gson
 import io.reactivex.disposables.CompositeDisposable
 
 @SuppressLint("CheckResult")
 class SplashViewModel(
     private val exchangeRatesApi: ExchangeRatesApi,
     private val schedulers: AppSchedulers,
-    private val db: AppDatabase
+    private val db: AppDatabase,
+    private val gson: Gson
 ): ViewModel() {
 
     private val compositeDisposable = CompositeDisposable()
 
-    private val _exchangeRates = MutableLiveData<ExchangeRatesOld>()
+    private val _exchangeRates = MutableLiveData<Int>()
 
-    val exchangeRates: LiveData<ExchangeRatesOld>
+    val exchangeRates: LiveData<Int>
         get() = _exchangeRates
 
     init {
-        checkInternalStorage()
+        getFiats()
     }
 
-    fun checkInternalStorage() {
+    fun getFiats() {
+
         db.fiatsDao().getAll()
+            .observeOn(schedulers.mainThread)
+            .filter {
+                if(it.isEmpty()){
+                    return@filter true
+                }
+                _exchangeRates.value = it.size
+                println("")
+                return@filter false
+            }
+            .observeOn(schedulers.io)
+            .flatMap {
+                exchangeRatesApi.getExchangeRates().toObservable()
+            }
+            .map { exchangeRates ->
+                ExchangeRatesOld.ratesToDBFiats(gson, exchangeRates)
+            }
+            .flatMap { dbFiats ->
+                db.fiatsDao().insertAll(dbFiats).toObservable<Int>()
+            }
             .subscribeOn(schedulers.io)
             .observeOn(schedulers.mainThread)
             .subscribe ({ fiats ->
-                if(fiats.isEmpty()) {
-                    loadData()
-                } else {
-                    // to next activity
-                }
+                _exchangeRates.value = fiats
             },{
                 println("onError: ${it.message}")
-            })
-    }
-
-    private fun loadData() {
-        exchangeRatesApi.getExchangeRates()
-            .subscribeOn(schedulers.io)
-            .observeOn(schedulers.mainThread)
-            .subscribe({ exchangeRates ->
-                _exchangeRates.value = exchangeRates
-            },{ error ->
-                println(error.message)
+            }, {
+                println("onComplete")
             })
     }
 

@@ -5,6 +5,7 @@ import com.example.cryptomanager_v2.data.db.AppDatabase
 import com.example.cryptomanager_v2.ui.splash.SplashViewModelFactory
 import com.example.cryptomanager_v2.utils.di.AppSchedulers
 import com.example.cryptomanager_v2.utils.di.scopes.ActivityScope
+import com.google.gson.Gson
 import dagger.Module
 import dagger.Provides
 
@@ -16,12 +17,14 @@ class SplashActivityModule {
     fun providesSplashViewModelFactory(
         exchangeRatesApi: ExchangeRatesApi,
         schedulers: AppSchedulers,
-        database: AppDatabase
+        database: AppDatabase,
+        gson: Gson
     ) : SplashViewModelFactory {
         return SplashViewModelFactory(
             exchangeRatesApi,
             schedulers,
-            database
+            database,
+            gson
         )
     }
 }

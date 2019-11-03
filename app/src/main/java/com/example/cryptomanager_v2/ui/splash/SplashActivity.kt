@@ -28,7 +28,7 @@ class SplashActivity : AppCompatActivity() {
         viewModel = ViewModelProviders.of(this, factory).get(SplashViewModel::class.java)
 
         viewModel.exchangeRates.observe(this, Observer { exchangeRates ->
-            text_loading.text = exchangeRates.rates?.gbp.toString()
+            text_loading.text = exchangeRates.toString()
         })
     }
 }
