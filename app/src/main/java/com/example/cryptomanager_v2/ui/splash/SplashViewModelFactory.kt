@@ -13,9 +13,11 @@ class SplashViewModelFactory @Inject constructor(
 
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         if(modelClass.isAssignableFrom(SplashViewModel::class.java)) {
-            return SplashViewModel(exchangeRatesApi, schedulers) as T
+            return SplashViewModel(
+                exchangeRatesApi,
+                schedulers
+            ) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }
-
 }
