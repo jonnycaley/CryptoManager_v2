@@ -9,7 +9,6 @@ import dagger.android.HasAndroidInjector
 import javax.inject.Inject
 
 class App: Application(), HasAndroidInjector {
-    //https://www.arthlimchiu.com/2019/09/03/advanced-dagger-in-mvvm.html#iteration-3-reduce-boilerplate-code-by-using-dagger-android
 
     @Inject
     lateinit var dispatchingAndroidInjector: DispatchingAndroidInjector<Any>
@@ -19,6 +18,7 @@ class App: Application(), HasAndroidInjector {
 
         component = DaggerAppComponent
             .builder()
+            .app(this)
             .build()
         component.inject(this)
     }
