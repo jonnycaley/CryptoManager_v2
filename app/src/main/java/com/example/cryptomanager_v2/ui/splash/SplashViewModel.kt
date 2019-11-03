@@ -6,8 +6,6 @@ import androidx.lifecycle.ViewModel
 import com.example.cryptomanager_v2.data.ExchangeRatesApi
 import com.example.cryptomanager_v2.data.model.ExchangeRates.ExchangeRatesOld
 import com.example.cryptomanager_v2.utils.di.AppSchedulers
-import io.reactivex.SingleObserver
-import io.reactivex.disposables.Disposable
 
 class SplashViewModel(
     private val exchangeRatesApi: ExchangeRatesApi,
@@ -33,10 +31,5 @@ class SplashViewModel(
             },{ error ->
                 println(error.message)
             })
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        // dispose of disposables
     }
 }
