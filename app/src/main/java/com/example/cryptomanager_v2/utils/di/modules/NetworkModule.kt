@@ -1,6 +1,5 @@
 package com.example.cryptomanager_v2.utils.di.modules
 
-import android.util.Log
 import com.example.cryptomanager_v2.data.ExchangeRatesApi
 import com.example.cryptomanager_v2.utils.di.AppSchedulers
 import com.example.cryptomanager_v2.utils.di.Constants
@@ -18,6 +17,22 @@ import javax.inject.Singleton
 object NetworkModule {
 
     @Provides
+    @Singleton
+    @JvmStatic
+    internal fun provideGsonConverterFactory(): GsonConverterFactory {
+        return GsonConverterFactory.create()
+    }
+
+    @Provides
+    @Singleton
+    @JvmStatic
+    internal fun provideRxJava2CallAdapterFactory(
+        schedulers: AppSchedulers
+    ): RxJava2CallAdapterFactory {
+        return RxJava2CallAdapterFactory.createWithScheduler(schedulers.io)
+    }
+
+    @Provides
     @Reusable
     @JvmStatic
     internal fun provideExchangeRatesApi(@EXCHANGERATES retrofit: Retrofit): ExchangeRatesApi {
@@ -28,11 +43,14 @@ object NetworkModule {
     @Singleton
     @JvmStatic
     @EXCHANGERATES
-    internal fun provideExchangeRatesRetrofit(schedulers: AppSchedulers): Retrofit {
+    internal fun provideExchangeRatesRetrofit(
+        gsonConverterFactory: GsonConverterFactory,
+        rxJava2CallAdapterFactory: RxJava2CallAdapterFactory
+    ): Retrofit {
         return Retrofit.Builder()
             .baseUrl(Constants.URL_EXCHANGE_RATES)
-            .addConverterFactory(GsonConverterFactory.create())
-            .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(schedulers.io))
+            .addConverterFactory(gsonConverterFactory)
+            .addCallAdapterFactory(rxJava2CallAdapterFactory)
             .build()
     }
 
