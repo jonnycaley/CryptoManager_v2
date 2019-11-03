@@ -30,6 +30,9 @@ kapt {
 }
 
 dependencies {
+
+    def room_version = "2.2.1"
+
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation"org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'androidx.appcompat:appcompat:1.1.0'
@@ -53,9 +56,9 @@ dependencies {
     implementation 'androidx.cardview:cardview:1.0.0'
 
     /* Retrofit using RxJava2, Okhttp, Okhttp logging interceptor, Gson  */
-    implementation 'com.squareup.retrofit2:retrofit:2.6.1'
-    implementation 'com.squareup.retrofit2:converter-gson:2.6.1'
-    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.6.1'
+    implementation 'com.squareup.retrofit2:retrofit:2.6.2'
+    implementation 'com.squareup.retrofit2:converter-gson:2.6.2'
+    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.6.2'
     implementation 'com.squareup.okhttp3:logging-interceptor:4.2.0'
 
     /* Glide */
@@ -79,6 +82,10 @@ dependencies {
 
     // Data binding
     kapt "com.android.databinding:compiler:3.1.4"
+
+    implementation "androidx.room:room-runtime:$room_version"
+    annotationProcessor "androidx.room:room-compiler:$room_version" // For Kotlin use kapt instead of annotationProcessor
+
 
     /* AndroidJUnit*/
 }
