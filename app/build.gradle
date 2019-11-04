@@ -88,6 +88,11 @@ dependencies {
     implementation "androidx.room:room-rxjava2:$room_version"
     kapt "androidx.room:room-compiler:$room_version"
 
+    /* RxKotlin */
+    def rxkotlin_version = "2.4.0"
+    implementation("io.reactivex.rxjava2:rxkotlin:$rxkotlin_version")
+
+
 
     /* AndroidJUnit*/
 }
