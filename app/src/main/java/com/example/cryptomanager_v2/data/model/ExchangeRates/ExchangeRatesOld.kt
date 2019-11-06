@@ -1,6 +1,6 @@
 package com.example.cryptomanager_v2.data.model.ExchangeRates
 
-import com.example.cryptomanager_v2.data.db.DBFiat
+import com.example.cryptomanager_v2.data.db.fiats.DBFiat
 import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
 import org.json.JSONException
@@ -30,7 +30,12 @@ class ExchangeRatesOld {
                     val key = keys.next()
                     val value = jObject.getString(key)
 
-                    fiatsArray.add(DBFiat(name = key, rate = value.toDouble()))
+                    fiatsArray.add(
+                        DBFiat(
+                            name = key,
+                            rate = value.toDouble()
+                        )
+                    )
                 }
             } catch (e: JSONException) {
                 e.printStackTrace()

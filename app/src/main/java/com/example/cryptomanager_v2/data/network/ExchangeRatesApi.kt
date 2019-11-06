@@ -1,4 +1,4 @@
-package com.example.cryptomanager_v2.data
+package com.example.cryptomanager_v2.data.network
 
 import com.example.cryptomanager_v2.data.model.ExchangeRates.ExchangeRatesOld
 import io.reactivex.Single
