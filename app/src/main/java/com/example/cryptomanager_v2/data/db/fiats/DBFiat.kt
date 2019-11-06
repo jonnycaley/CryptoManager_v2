@@ -1,4 +1,4 @@
-package com.example.cryptomanager_v2.data.db
+package com.example.cryptomanager_v2.data.db.fiats
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
