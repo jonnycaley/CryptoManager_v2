@@ -1,15 +1,19 @@
 package com.example.cryptomanager_v2.utils.di.modules
 
-import com.example.cryptomanager_v2.data.ExchangeRatesApi
+import com.example.cryptomanager_v2.data.network.CryptoCompareApi
+import com.example.cryptomanager_v2.data.network.ExchangeRatesApi
 import com.example.cryptomanager_v2.utils.di.AppSchedulers
 import com.example.cryptomanager_v2.utils.Constants
 import com.google.gson.Gson
 import dagger.Module
 import dagger.Provides
 import dagger.Reusable
+import okhttp3.HttpUrl
+import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.lang.annotation.Documented
 import javax.inject.Qualifier
 import javax.inject.Singleton
@@ -41,6 +45,13 @@ object NetworkModule {
     }
 
     @Provides
+    @Reusable
+    @JvmStatic
+    internal fun provideCryptoCompareApi(@CRYPTOCOMPARE retrofit: Retrofit): CryptoCompareApi {
+        return retrofit.create(CryptoCompareApi::class.java)
+    }
+
+    @Provides
     @Singleton
     @JvmStatic
     @EXCHANGERATES
@@ -53,6 +64,55 @@ object NetworkModule {
             .addConverterFactory(gsonConverterFactory)
             .addCallAdapterFactory(rxJava2CallAdapterFactory)
             .build()
+    }
+
+    @Provides
+    @Singleton
+    @JvmStatic
+    @CRYPTOCOMPARE
+    internal fun provideCryptoCompareRetrofit(
+        scalarsConverterFactory: ScalarsConverterFactory,
+        rxJava2CallAdapterFactory: RxJava2CallAdapterFactory,
+        okHttpClient: OkHttpClient
+    ): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl(Constants.URL_CRYPTOCOMPARE)
+            .addConverterFactory(scalarsConverterFactory)
+            .addCallAdapterFactory(rxJava2CallAdapterFactory)
+            .client(okHttpClient)
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    @JvmStatic
+    fun providesScalarsConverterFactory(): ScalarsConverterFactory {
+        return ScalarsConverterFactory.create()
+    }
+
+    @Provides
+    @Singleton
+    @JvmStatic
+    fun provideOkHttpClient(): OkHttpClient {
+        val httpClient = OkHttpClient.Builder()
+
+        httpClient.addInterceptor { chain ->
+            val original = chain.request()
+            val originalHttpUrl = original.url
+
+            val url = originalHttpUrl.newBuilder()
+                    .addQueryParameter(Constants.NAME_CRYPTOCOMPARE, Constants.KEY_CRYPTOCOMPARE)
+                    .build()
+
+            println("Trying host: $url")
+
+            val requestBuilder = original.newBuilder()
+                .url(url)
+
+            val request = requestBuilder.build()
+            chain.proceed(request)
+        }
+        return httpClient.build()
     }
 
     @Provides
@@ -72,4 +132,8 @@ object NetworkModule {
     @Documented
     @Qualifier
     annotation class EXCHANGERATES
+
+    @Documented
+    @Qualifier
+    annotation class CRYPTOCOMPARE
 }
