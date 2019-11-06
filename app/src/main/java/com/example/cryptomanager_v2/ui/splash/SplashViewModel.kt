@@ -6,10 +6,18 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.cryptomanager_v2.data.ExchangeRatesApi
 import com.example.cryptomanager_v2.data.db.AppDatabase
+import com.example.cryptomanager_v2.data.db.DBFiat
 import com.example.cryptomanager_v2.data.model.ExchangeRates.ExchangeRatesOld
+import com.example.cryptomanager_v2.utils.Resource
+import com.example.cryptomanager_v2.utils.StateLiveData
+import com.example.cryptomanager_v2.utils.Status
 import com.example.cryptomanager_v2.utils.di.AppSchedulers
 import com.google.gson.Gson
+import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.Observables
+import io.reactivex.subjects.BehaviorSubject
+import kotlin.math.sign
 
 @SuppressLint("CheckResult")
 class SplashViewModel(
@@ -21,9 +29,9 @@ class SplashViewModel(
 
     private val compositeDisposable = CompositeDisposable()
 
-    private val _exchangeRates = MutableLiveData<Int>()
+    private val _exchangeRates = MutableLiveData<Resource<Int>>()
 
-    val exchangeRates: LiveData<Int>
+    val exchangeRates: LiveData<Resource<Int>>
         get() = _exchangeRates
 
     init {
@@ -31,16 +39,18 @@ class SplashViewModel(
     }
 
     fun getFiats() {
-
         db.fiatsDao().getAll()
+            .doOnSubscribe {
+                _exchangeRates.value = Resource.loading(null)
+            }
             .observeOn(schedulers.mainThread)
             .filter {
-                if(it.isEmpty()){
-                    return@filter true
+                if(it.isEmpty()) {
+                    true
+                } else {
+                    _exchangeRates
+                    false
                 }
-                _exchangeRates.value = it.size
-                println("")
-                return@filter false
             }
             .observeOn(schedulers.io)
             .flatMap {
@@ -54,12 +64,10 @@ class SplashViewModel(
             }
             .subscribeOn(schedulers.io)
             .observeOn(schedulers.mainThread)
-            .subscribe ({ fiats ->
-                _exchangeRates.value = fiats
+            .subscribe ({
+                _exchangeRates.value = Resource.success(it)
             },{
-                println("onError: ${it.message}")
-            }, {
-                println("onComplete")
+                _exchangeRates.value = Resource.error(msg = it.localizedMessage, data = null)
             })
     }
 
