@@ -7,4 +7,7 @@ interface CryptoCompareApi {
 
     @GET("all/coinlist")
     fun getAllCrypto(): Observable<String>
+
+    @GET("all/exchanges")
+    fun getAllExchanges(): Observable<String>
 }
