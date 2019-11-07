@@ -1,4 +1,4 @@
-package com.example.cryptomanager_v2.data.model.CryptoCompare.Crytpo
+package com.example.cryptomanager_v2.data.model.cryptocompare.crytpo
 
 import com.example.cryptomanager_v2.data.db.cryptos.DBCrypto
 import com.google.gson.Gson
