@@ -38,14 +38,15 @@ class SplashViewModel(
     init {
         getFiats()
         getCryptos()
+        getExchangeRates()
+    }
+
+    private fun getExchangeRates() {
     }
 
     private fun getCryptos() {
 
         cryptoCompareApi.getAllCrypto()
-//            .doOnSubscribe {
-//                _cryptos.value = Resource.loading(null)
-//            }
             .observeOn(schedulers.computation)
             .map { cryptoJson ->
                 Crypto.cryptoToDBCryptos(gson, cryptoJson)
@@ -57,13 +58,15 @@ class SplashViewModel(
             }
             .subscribeOn(schedulers.io)
             .observeOn(schedulers.mainThread)
-            .subscribe ({
-                _cryptos.value = Resource.success(it)
-            },{
-                _cryptos.value = Resource.error(msg = it.localizedMessage, data = null)
-            }, {
+            .doOnSubscribe {
+                _cryptos.value = Resource.loading(null)
+            }
+            .doOnComplete {
                 _cryptos.value = Resource.success(null)
-            })
+            }
+            .doOnError {
+                _cryptos.value = Resource.error(msg = it.localizedMessage, data = null)
+            }
     }
 
     fun getFiats() {
