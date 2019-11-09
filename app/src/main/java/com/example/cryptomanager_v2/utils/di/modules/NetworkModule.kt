@@ -10,6 +10,7 @@ import dagger.Provides
 import dagger.Reusable
 import okhttp3.HttpUrl
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
@@ -93,7 +94,9 @@ object NetworkModule {
     @Provides
     @Singleton
     @JvmStatic
-    fun provideOkHttpClient(): OkHttpClient {
+    fun provideOkHttpClient(
+        httpLoggingInterceptor: HttpLoggingInterceptor
+    ): OkHttpClient {
         val httpClient = OkHttpClient.Builder()
 
         httpClient.addInterceptor { chain ->
@@ -104,15 +107,23 @@ object NetworkModule {
                     .addQueryParameter(Constants.NAME_CRYPTOCOMPARE, Constants.KEY_CRYPTOCOMPARE)
                     .build()
 
-            println("Trying host: $url")
-
             val requestBuilder = original.newBuilder()
                 .url(url)
 
             val request = requestBuilder.build()
             chain.proceed(request)
         }
+        httpClient.addInterceptor(httpLoggingInterceptor)
         return httpClient.build()
+    }
+
+    @Provides
+    @Singleton
+    @JvmStatic
+    fun provideLoggingInterceptor() : HttpLoggingInterceptor {
+        val interceptor = HttpLoggingInterceptor()
+        interceptor.level = HttpLoggingInterceptor.Level.BODY
+        return interceptor
     }
 
     @Provides
