@@ -6,6 +6,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.example.cryptomanager_v2.R
 import dagger.android.AndroidInjection
+import io.reactivex.rxkotlin.Observables
 import kotlinx.android.synthetic.main.activity_splash.*
 import javax.inject.Inject
 
@@ -24,12 +25,10 @@ class SplashActivity : AppCompatActivity() {
 
         viewModel = ViewModelProviders.of(this, factory).get(SplashViewModel::class.java)
 
-        viewModel.exchangeRates.observe(this, Observer { exchangeRates ->
-            text_loading.text = exchangeRates.data.toString()
-        })
-
-        viewModel.cryptos.observe(this, Observer { cryptos ->
-            text_loading.text = cryptos.data.toString()
-        })
+        viewModel.apply {
+            loading.observe(this@SplashActivity, Observer { exchangeRates ->
+                text_loading.text = loading.value.toString()
+            })
+        }
     }
 }
