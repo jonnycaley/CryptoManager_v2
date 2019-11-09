@@ -11,9 +11,13 @@ import com.example.cryptomanager_v2.data.model.ExchangeRates.ExchangeRatesOld
 import com.example.cryptomanager_v2.data.model.cryptocompare.exchanges.Exchange
 import com.example.cryptomanager_v2.data.network.CryptoCompareApi
 import com.example.cryptomanager_v2.utils.Resource
+import com.example.cryptomanager_v2.utils.Status
 import com.example.cryptomanager_v2.utils.di.AppSchedulers
 import com.google.gson.Gson
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.Observables
+import io.reactivex.rxkotlin.addTo
+import io.reactivex.subjects.BehaviorSubject
 
 @SuppressLint("CheckResult")
 class SplashViewModel(
@@ -30,77 +34,128 @@ class SplashViewModel(
     private val _cryptos = MutableLiveData<Resource<Int>>()
     private val _exchanges = MutableLiveData<Resource<Int>>()
 
-    val exchangeRates: LiveData<Resource<Int>>
-        get() = _exchangeRates
+    private val _isLoading = MutableLiveData<Boolean>()
 
-    val cryptos: LiveData<Resource<Int>>
-        get() = _cryptos
+    val loading: LiveData<Boolean>
+        get() = _isLoading
 
-    val exchanges: LiveData<Resource<Int>>
-        get() = _exchanges
+    var exchangeRatesSubject = BehaviorSubject.createDefault<Resource<Int>>(Resource.idle())
+    var cryptosSubject = BehaviorSubject.createDefault<Resource<Int>>(Resource.idle())
+    var exchangesSubject = BehaviorSubject.createDefault<Resource<Int>>(Resource.idle())
 
     init {
-//        getFiats()
-//        getCryptos()
+        Observables.combineLatest(exchangeRatesSubject, cryptosSubject, exchangesSubject) {
+            exchangeRates, cryptos, exchanges ->
+            exchangeRates.status == Status.LOADING || cryptos.status == Status.LOADING || exchanges.status == Status.LOADING
+        }
+            .subscribe {
+            _isLoading.value = it
+            }
+            .addTo(compositeDisposable)
+
+        exchangeRatesSubject
+            .subscribe {
+                _exchangeRates.value = it
+            }
+            .addTo(compositeDisposable)
+
+        cryptosSubject
+            .subscribe {
+                _cryptos.value = it
+            }
+            .addTo(compositeDisposable)
+
+        exchangesSubject
+            .subscribe {
+                _exchanges.value = it
+            }
+            .addTo(compositeDisposable)
+
+        getFiats()
+        getCryptos()
         getExchangeRates()
     }
 
     private fun getExchangeRates() {
-        cryptoCompareApi.getAllExchanges()
-            .map {
-                Exchange.exchangesToDBExchanges(gson, it)
-            }
-            .subscribeOn(schedulers.io)
+
+        db.exchangesDao().getAll()
             .observeOn(schedulers.mainThread)
-            .subscribe { exchanges ->
-                exchanges.forEach {
-                    println(it.exchangeName)
-                    println(it.cryptos)
+            .doOnNext {
+                if(it.isNotEmpty()) {
+                    exchangesSubject.onNext(Resource.success())
                 }
             }
+            .filter {
+                it.isEmpty()
+            }
+            .observeOn(schedulers.io)
+            .flatMap { cryptoCompareApi.getAllExchanges() }
+            .observeOn(schedulers.computation)
+            .map { Exchange.exchangesToDBExchanges(gson, it) }
+            .flatMap { db.exchangesDao().insertAll(it).toObservable<Int>() }
+            .subscribeOn(schedulers.io)
+            .observeOn(schedulers.mainThread)
+            .doOnSubscribe {
+                exchangesSubject.onNext(Resource.loading())
+            }
+            .subscribe ({ exchanges ->
+
+            },{
+                exchangesSubject.onNext(Resource.error(it.message))
+            },{
+                exchangesSubject.onNext(Resource.success())
+            })
+            .addTo(compositeDisposable)
     }
 
     private fun getCryptos() {
 
         db.cryptosDao().getAll()
+            .observeOn(schedulers.mainThread)
+            .doOnNext {
+                if(it.isNotEmpty()) {
+                    cryptosSubject.onNext(Resource.success())
+                }
+            }
             .filter {
                 it.isEmpty()
             }
-            .flatMap { cryptoCompareApi.getAllCrypto() }
+            .observeOn(schedulers.io)
+            .flatMap {
+                cryptoCompareApi.getAllCrypto()
+            }
             .observeOn(schedulers.computation)
             .map { cryptoJson ->
                 Crypto.cryptoToDBCryptos(gson, cryptoJson)
             }
-            .observeOn(schedulers.mainThread)
-            .observeOn(schedulers.computation)
             .flatMap { dbCrypto ->
                 db.cryptosDao().insertAll(dbCrypto).toObservable<Int>()
             }
             .subscribeOn(schedulers.computation)
             .observeOn(schedulers.mainThread)
             .doOnSubscribe {
-                _cryptos.value = Resource.loading(null)
+                cryptosSubject.onNext(Resource.loading())
             }
             .subscribe ({
 
             },{
-                _cryptos.value = Resource.error(msg = it.localizedMessage, data = null)
+                cryptosSubject.onNext(Resource.error(it.message))
             },{
-                _cryptos.value = Resource.success(null)
+                cryptosSubject.onNext(Resource.success())
             })
+            .addTo(compositeDisposable)
     }
 
     fun getFiats() {
         db.fiatsDao().getAll()
-            .doOnSubscribe { _exchangeRates.value = Resource.loading(null) }
             .observeOn(schedulers.mainThread)
-            .filter {
-                if(it.isEmpty()) {
-                    true
-                } else {
-                    _exchangeRates
-                    false
+            .doOnNext {
+                if(it.isNotEmpty()) {
+                    exchangesSubject.onNext(Resource.success())
                 }
+            }
+            .filter {
+                it.isEmpty()
             }
             .observeOn(schedulers.io)
             .flatMap {
@@ -115,16 +170,21 @@ class SplashViewModel(
             }
             .subscribeOn(schedulers.computation)
             .observeOn(schedulers.mainThread)
+            .doOnSubscribe {
+                exchangesSubject.onNext(Resource.loading())
+            }
             .subscribe ({
-                _exchangeRates.value = Resource.success(it)
+
             },{
-                _exchangeRates.value = Resource.error(msg = it.localizedMessage, data = null)
+                exchangesSubject.onNext(Resource.error(it.message))
+            }, {
+                exchangesSubject.onNext(Resource.success())
             })
+            .addTo(compositeDisposable)
     }
 
     override fun onCleared() {
         super.onCleared()
-
         compositeDisposable.dispose()
     }
 }
