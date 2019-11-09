@@ -10,9 +10,9 @@ import io.reactivex.Observable
 @Dao
 interface DBExchangeDao {
 
-    @Query("SELECT * FROM DBCrypto")
-    fun getAll(): Observable<List<DBCrypto>>
+    @Query("SELECT * FROM DBExchange")
+    fun getAll(): Observable<List<DBExchange>>
 
     @Insert
-    fun insertAll(fiats: List<DBCrypto>): Completable
+    fun insertAll(fiats: List<DBExchange>): Completable
 }
