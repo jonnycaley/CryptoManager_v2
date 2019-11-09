@@ -1,5 +1,6 @@
 package com.example.cryptomanager_v2.data.model.cryptocompare.exchanges
 
+import com.example.cryptomanager_v2.data.db.exchanges.Cryptos
 import com.example.cryptomanager_v2.data.db.exchanges.DBExchange
 import com.google.gson.Gson
 import org.json.JSONException
@@ -23,14 +24,13 @@ class Exchange {
 
                         val jsonObject2 = JSONTokener(innerJsonObject).nextValue() as JSONObject
                         val baseCryptos = jsonObject2.keys()
-                        val cryptoAndConversion = mutableListOf<Pair<String, List<String>>>()
+                        val cryptoAndConversion = arrayListOf<Pair<String, ArrayList<String>>>()
                         while (baseCryptos.hasNext()) {
                             val baseCrypto = baseCryptos.next()
-                            val newObj = jsonObject2.getString(baseCrypto)
-                            val conversionCryptos = gson.fromJson(jsonObject2.getString(baseCrypto), mutableListOf<String>()::class.java)
+                            val conversionCryptos = gson.fromJson(jsonObject2.getString(baseCrypto), arrayListOf<String>()::class.java)
                             cryptoAndConversion.add(Pair(baseCrypto, conversionCryptos))
                         }
-                        add(DBExchange(exchange, cryptoAndConversion))
+                        add(DBExchange(exchange, Cryptos(cryptoAndConversion)))
                     }
 
                 } catch (e: JSONException) {
