@@ -6,6 +6,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.cryptomanager_v2.data.network.ExchangeRatesApi
 import com.example.cryptomanager_v2.data.db.AppDatabase
+import com.example.cryptomanager_v2.data.db.cryptos.DBCryptosDao
+import com.example.cryptomanager_v2.data.db.exchanges.DBExchangeDao
+import com.example.cryptomanager_v2.data.db.fiats.DBFiatsDao
 import com.example.cryptomanager_v2.data.model.cryptocompare.crytpo.Crypto
 import com.example.cryptomanager_v2.data.model.ExchangeRates.ExchangeRatesOld
 import com.example.cryptomanager_v2.data.model.cryptocompare.exchanges.Exchange
@@ -23,7 +26,9 @@ import io.reactivex.subjects.BehaviorSubject
 class SplashViewModel(
     private val exchangeRatesApi: ExchangeRatesApi,
     private val schedulers: AppSchedulers,
-    private val db: AppDatabase,
+    private val exchangesDao: DBExchangeDao,
+    private val fiatsDao: DBFiatsDao,
+    private val cryptosDao: DBCryptosDao,
     private val gson: Gson,
     private val cryptoCompareApi: CryptoCompareApi
 ): ViewModel() {
@@ -39,9 +44,9 @@ class SplashViewModel(
     val loading: LiveData<Boolean>
         get() = _isLoading
 
-    var exchangeRatesSubject = BehaviorSubject.createDefault<Resource<Int>>(Resource.idle())
-    var cryptosSubject = BehaviorSubject.createDefault<Resource<Int>>(Resource.idle())
-    var exchangesSubject = BehaviorSubject.createDefault<Resource<Int>>(Resource.idle())
+    private var exchangeRatesSubject = BehaviorSubject.createDefault<Resource<Int>>(Resource.idle())
+    private var cryptosSubject = BehaviorSubject.createDefault<Resource<Int>>(Resource.idle())
+    private var exchangesSubject = BehaviorSubject.createDefault<Resource<Int>>(Resource.idle())
 
     init {
         Observables.combineLatest(exchangeRatesSubject, cryptosSubject, exchangesSubject) {
@@ -49,7 +54,7 @@ class SplashViewModel(
             exchangeRates.status == Status.LOADING || cryptos.status == Status.LOADING || exchanges.status == Status.LOADING
         }
             .subscribe {
-            _isLoading.value = it
+                _isLoading.value = it
             }
             .addTo(compositeDisposable)
 
@@ -78,7 +83,7 @@ class SplashViewModel(
 
     private fun getExchangeRates() {
 
-        db.exchangesDao().getAll()
+        exchangesDao.getAll()
             .observeOn(schedulers.mainThread)
             .doOnNext {
                 if(it.isNotEmpty()) {
@@ -92,7 +97,7 @@ class SplashViewModel(
             .flatMap { cryptoCompareApi.getAllExchanges() }
             .observeOn(schedulers.computation)
             .map { Exchange.exchangesToDBExchanges(gson, it) }
-            .flatMap { db.exchangesDao().insertAll(it).toObservable<Int>() }
+            .flatMap { exchangesDao.insertAll(it).toObservable<Int>() }
             .subscribeOn(schedulers.io)
             .observeOn(schedulers.mainThread)
             .doOnSubscribe {
@@ -110,7 +115,7 @@ class SplashViewModel(
 
     private fun getCryptos() {
 
-        db.cryptosDao().getAll()
+        cryptosDao.getAll()
             .observeOn(schedulers.mainThread)
             .doOnNext {
                 if(it.isNotEmpty()) {
@@ -129,7 +134,7 @@ class SplashViewModel(
                 Crypto.cryptoToDBCryptos(gson, cryptoJson)
             }
             .flatMap { dbCrypto ->
-                db.cryptosDao().insertAll(dbCrypto).toObservable<Int>()
+                cryptosDao.insertAll(dbCrypto).toObservable<Int>()
             }
             .subscribeOn(schedulers.computation)
             .observeOn(schedulers.mainThread)
@@ -147,7 +152,8 @@ class SplashViewModel(
     }
 
     fun getFiats() {
-        db.fiatsDao().getAll()
+
+        fiatsDao.getAll()
             .observeOn(schedulers.mainThread)
             .doOnNext {
                 if(it.isNotEmpty()) {
@@ -166,7 +172,7 @@ class SplashViewModel(
                 ExchangeRatesOld.ratesToDBFiats(gson, exchangeRates)
             }
             .flatMap { dbFiats ->
-                db.fiatsDao().insertAll(dbFiats).toObservable<Int>()
+                fiatsDao.insertAll(dbFiats).toObservable<Int>()
             }
             .subscribeOn(schedulers.computation)
             .observeOn(schedulers.mainThread)

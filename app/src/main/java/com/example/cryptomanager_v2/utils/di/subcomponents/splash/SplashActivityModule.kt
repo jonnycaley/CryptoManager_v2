@@ -2,6 +2,9 @@ package com.example.cryptomanager_v2.utils.di.subcomponents.splash
 
 import com.example.cryptomanager_v2.data.network.ExchangeRatesApi
 import com.example.cryptomanager_v2.data.db.AppDatabase
+import com.example.cryptomanager_v2.data.db.cryptos.DBCryptosDao
+import com.example.cryptomanager_v2.data.db.exchanges.DBExchangeDao
+import com.example.cryptomanager_v2.data.db.fiats.DBFiatsDao
 import com.example.cryptomanager_v2.data.network.CryptoCompareApi
 import com.example.cryptomanager_v2.ui.splash.SplashViewModelFactory
 import com.example.cryptomanager_v2.utils.di.AppSchedulers
@@ -18,14 +21,18 @@ class SplashActivityModule {
     fun providesSplashViewModelFactory(
         exchangeRatesApi: ExchangeRatesApi,
         schedulers: AppSchedulers,
-        database: AppDatabase,
+        exchangesDao: DBExchangeDao,
+        fiatsDao: DBFiatsDao,
+        cryptosDao: DBCryptosDao,
         gson: Gson,
         cryptoCompareApi: CryptoCompareApi
     ) : SplashViewModelFactory {
         return SplashViewModelFactory(
             exchangeRatesApi,
             schedulers,
-            database,
+            exchangesDao,
+            fiatsDao,
+            cryptosDao,
             gson,
             cryptoCompareApi
         )
