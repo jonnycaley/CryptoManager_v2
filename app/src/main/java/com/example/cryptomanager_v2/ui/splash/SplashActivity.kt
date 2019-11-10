@@ -6,7 +6,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.example.cryptomanager_v2.R
 import dagger.android.AndroidInjection
-import io.reactivex.rxkotlin.Observables
 import kotlinx.android.synthetic.main.activity_splash.*
 import javax.inject.Inject
 
