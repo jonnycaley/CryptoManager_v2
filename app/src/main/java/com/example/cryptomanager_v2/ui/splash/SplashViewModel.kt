@@ -5,7 +5,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.cryptomanager_v2.data.network.ExchangeRatesApi
-import com.example.cryptomanager_v2.data.db.AppDatabase
 import com.example.cryptomanager_v2.data.db.cryptos.DBCryptosDao
 import com.example.cryptomanager_v2.data.db.exchanges.DBExchangeDao
 import com.example.cryptomanager_v2.data.db.fiats.DBFiatsDao
@@ -35,7 +34,7 @@ class SplashViewModel(
 
     private val compositeDisposable = CompositeDisposable()
 
-    private val _exchangeRates = MutableLiveData<Resource<Int>>()
+    private val _fiats = MutableLiveData<Resource<Int>>()
     private val _cryptos = MutableLiveData<Resource<Int>>()
     private val _exchanges = MutableLiveData<Resource<Int>>()
 
@@ -44,12 +43,12 @@ class SplashViewModel(
     val loading: LiveData<Boolean>
         get() = _isLoading
 
-    private var exchangeRatesSubject = BehaviorSubject.createDefault<Resource<Int>>(Resource.idle())
+    private var fiatsSubject = BehaviorSubject.createDefault<Resource<Int>>(Resource.idle())
     private var cryptosSubject = BehaviorSubject.createDefault<Resource<Int>>(Resource.idle())
     private var exchangesSubject = BehaviorSubject.createDefault<Resource<Int>>(Resource.idle())
 
     init {
-        Observables.combineLatest(exchangeRatesSubject, cryptosSubject, exchangesSubject) {
+        Observables.combineLatest(fiatsSubject, cryptosSubject, exchangesSubject) {
             exchangeRates, cryptos, exchanges ->
             exchangeRates.status == Status.LOADING || cryptos.status == Status.LOADING || exchanges.status == Status.LOADING
         }
@@ -58,9 +57,9 @@ class SplashViewModel(
             }
             .addTo(compositeDisposable)
 
-        exchangeRatesSubject
+        fiatsSubject
             .subscribe {
-                _exchangeRates.value = it
+                _fiats.value = it
             }
             .addTo(compositeDisposable)
 
@@ -76,25 +75,30 @@ class SplashViewModel(
             }
             .addTo(compositeDisposable)
 
-        getFiats()
-        getCryptos()
-        getExchangeRates()
+        checkFiatsDB()
+        checkCryptosDB()
+        checkExchangesDB()
     }
 
-    private fun getExchangeRates() {
+    private fun checkExchangesDB() {
 
         exchangesDao.getAll()
+            .subscribeOn(schedulers.io)
             .observeOn(schedulers.mainThread)
-            .doOnNext {
-                if(it.isNotEmpty()) {
+            .doOnSubscribe {
+                exchangesSubject.onNext(Resource.loading())
+            }
+            .subscribe {
+                if(it.isNotEmpty())
                     exchangesSubject.onNext(Resource.success())
-                }
+                else
+                    getExchanges()
             }
-            .filter {
-                it.isEmpty()
-            }
-            .observeOn(schedulers.io)
-            .flatMap { cryptoCompareApi.getAllExchanges() }
+    }
+
+    private fun getExchanges() {
+
+        cryptoCompareApi.getAllExchanges()
             .observeOn(schedulers.computation)
             .map { Exchange.exchangesToDBExchanges(gson, it) }
             .flatMap { exchangesDao.insertAll(it).toObservable<Int>() }
@@ -104,7 +108,6 @@ class SplashViewModel(
                 exchangesSubject.onNext(Resource.loading())
             }
             .subscribe ({ exchanges ->
-
             },{
                 exchangesSubject.onNext(Resource.error(it.message))
             },{
@@ -113,22 +116,25 @@ class SplashViewModel(
             .addTo(compositeDisposable)
     }
 
-    private fun getCryptos() {
+    private fun checkCryptosDB() {
 
         cryptosDao.getAll()
+            .subscribeOn(schedulers.io)
             .observeOn(schedulers.mainThread)
-            .doOnNext {
-                if(it.isNotEmpty()) {
+            .doOnSubscribe {
+                cryptosSubject.onNext(Resource.loading())
+            }
+            .subscribe {
+                if(it.isNotEmpty())
                     cryptosSubject.onNext(Resource.success())
-                }
+                else
+                    getCryptos()
             }
-            .filter {
-                it.isEmpty()
-            }
-            .observeOn(schedulers.io)
-            .flatMap {
-                cryptoCompareApi.getAllCrypto()
-            }
+    }
+
+    private fun getCryptos() {
+
+        cryptoCompareApi.getAllCrypto()
             .observeOn(schedulers.computation)
             .map { cryptoJson ->
                 Crypto.cryptoToDBCryptos(gson, cryptoJson)
@@ -136,7 +142,7 @@ class SplashViewModel(
             .flatMap { dbCrypto ->
                 cryptosDao.insertAll(dbCrypto).toObservable<Int>()
             }
-            .subscribeOn(schedulers.computation)
+            .subscribeOn(schedulers.io)
             .observeOn(schedulers.mainThread)
             .doOnSubscribe {
                 cryptosSubject.onNext(Resource.loading())
@@ -151,22 +157,25 @@ class SplashViewModel(
             .addTo(compositeDisposable)
     }
 
-    fun getFiats() {
+    private fun checkFiatsDB() {
 
         fiatsDao.getAll()
+            .subscribeOn(schedulers.io)
             .observeOn(schedulers.mainThread)
-            .doOnNext {
-                if(it.isNotEmpty()) {
-                    exchangesSubject.onNext(Resource.success())
-                }
+            .doOnSubscribe {
+                fiatsSubject.onNext(Resource.loading())
             }
-            .filter {
-                it.isEmpty()
+            .subscribe {
+                if(it.isNotEmpty())
+                    fiatsSubject.onNext(Resource.success())
+                else
+                    getFiats()
             }
-            .observeOn(schedulers.io)
-            .flatMap {
-                exchangeRatesApi.getExchangeRates().toObservable()
-            }
+    }
+
+    fun getFiats() {
+
+        exchangeRatesApi.getFiats().toObservable()
             .observeOn(schedulers.computation)
             .map { exchangeRates ->
                 ExchangeRatesOld.ratesToDBFiats(gson, exchangeRates)
@@ -177,14 +186,13 @@ class SplashViewModel(
             .subscribeOn(schedulers.computation)
             .observeOn(schedulers.mainThread)
             .doOnSubscribe {
-                exchangesSubject.onNext(Resource.loading())
+                fiatsSubject.onNext(Resource.loading())
             }
             .subscribe ({
-
             },{
-                exchangesSubject.onNext(Resource.error(it.message))
+                fiatsSubject.onNext(Resource.error(it.message))
             }, {
-                exchangesSubject.onNext(Resource.success())
+                fiatsSubject.onNext(Resource.success())
             })
             .addTo(compositeDisposable)
     }
