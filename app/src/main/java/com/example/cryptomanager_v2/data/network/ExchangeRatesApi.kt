@@ -7,5 +7,5 @@ import retrofit2.http.GET
 interface ExchangeRatesApi {
 
     @GET("latest?base=USD")
-    fun getExchangeRates(): Single<ExchangeRatesOld>
+    fun getFiats(): Single<ExchangeRatesOld>
 }
