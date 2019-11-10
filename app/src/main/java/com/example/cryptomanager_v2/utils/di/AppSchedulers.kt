@@ -9,7 +9,6 @@ open class AppSchedulers(
     open val computation: Scheduler,
     open val io: Scheduler
 ) {
-
     companion object {
         fun get(): AppSchedulers {
             return AppSchedulers(
