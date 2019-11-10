@@ -100,8 +100,12 @@ class SplashViewModel(
 
         cryptoCompareApi.getAllExchanges()
             .observeOn(schedulers.computation)
-            .map { Exchange.exchangesToDBExchanges(gson, it) }
-            .flatMap { exchangesDao.insertAll(it).toObservable<Int>() }
+            .map {
+                Exchange.exchangesToDBExchanges(gson, it)
+            }
+            .flatMap {
+                exchangesDao.insertAll(it).toObservable<Int>()
+            }
             .subscribeOn(schedulers.io)
             .observeOn(schedulers.mainThread)
             .doOnSubscribe {
@@ -175,7 +179,7 @@ class SplashViewModel(
 
     fun getFiats() {
 
-        exchangeRatesApi.getFiats().toObservable()
+        exchangeRatesApi.getFiats()
             .observeOn(schedulers.computation)
             .map { exchangeRates ->
                 ExchangeRatesOld.ratesToDBFiats(gson, exchangeRates)

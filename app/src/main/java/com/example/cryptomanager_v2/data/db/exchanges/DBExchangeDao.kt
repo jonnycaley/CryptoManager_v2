@@ -14,5 +14,5 @@ interface DBExchangeDao {
     fun getAll(): Observable<List<DBExchange>>
 
     @Insert
-    fun insertAll(fiats: List<DBExchange>): Completable
+    fun insertAll(exchanges: List<DBExchange>): Completable
 }
