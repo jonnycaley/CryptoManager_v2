@@ -65,10 +65,18 @@ dependencies {
     testImplementation "android.arch.core:core-testing:1.1.1"
 
     testImplementation 'com.squareup.assertj:assertj-android:1.2.0'
+    
+    implementation "com.google.code.gson:gson:2.8.6"
 
+    testImplementation "com.google.code.gson:gson:2.8.6"
+
+    testCompile("com.google.code.gson:gson:2.8.6")
 
     /* assertThat */
     testCompile("org.assertj:assertj-core:3.11.1")
+
+    /* addes json for testing */
+    testCompile("org.json:json:20140107")
 
     //dagger
     def dagger_version = "2.24"
