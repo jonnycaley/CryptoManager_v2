@@ -8,5 +8,5 @@ import retrofit2.http.GET
 interface ExchangeRatesApi {
 
     @GET("latest?base=USD")
-    fun getFiats(): Observable<ExchangeRatesOld>
+    fun getFiats(): Observable<String>
 }
