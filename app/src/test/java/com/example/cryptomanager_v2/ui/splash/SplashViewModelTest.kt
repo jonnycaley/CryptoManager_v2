@@ -1,29 +1,34 @@
 package com.example.cryptomanager_v2.ui.splash
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.test.InstrumentationRegistry
 import com.example.cryptomanager_v2.data.db.cryptos.DBCrypto
 import com.example.cryptomanager_v2.data.db.cryptos.DBCryptosDao
 import com.example.cryptomanager_v2.data.db.exchanges.DBExchange
 import com.example.cryptomanager_v2.data.db.exchanges.DBExchangeDao
 import com.example.cryptomanager_v2.data.db.fiats.DBFiat
 import com.example.cryptomanager_v2.data.db.fiats.DBFiatsDao
-import com.example.cryptomanager_v2.data.model.ExchangeRates.ExchangeRatesOld
-import com.example.cryptomanager_v2.data.model.ExchangeRates.RatesOld
 import com.example.cryptomanager_v2.data.model.cryptocompare.exchanges.Exchange
 import com.example.cryptomanager_v2.data.network.CryptoCompareApi
 import com.example.cryptomanager_v2.data.network.ExchangeRatesApi
 import com.example.cryptomanager_v2.utils.TestSchedulers
 import com.example.cryptomanager_v2.utils.di.AppSchedulers
+import com.google.common.io.ByteStreams
 import com.google.gson.Gson
+import com.google.gson.JsonObject
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
 import io.reactivex.Completable
 import io.reactivex.Observable
 import org.assertj.core.api.Assertions.assertThat
+import org.json.JSONObject
 import org.junit.Rule
 import org.junit.Test
-import org.mockito.Mockito
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
+import org.mockito.junit.MockitoJUnitRunner
 
+@RunWith(MockitoJUnitRunner::class)
 class SplashViewModelTest {
 
     @JvmField
@@ -61,12 +66,12 @@ class SplashViewModelTest {
     }
 
     @Test
-    fun givenDatabaseTablesContainNoData_whenInit_thenDataLoasded() {
+    fun givenDatabaseTablesContainNoData_whenInit_thenDataLoaded() {
         val emptyExchangesDB = createEmptyExchangesDB()
         whenever(exchangeDao.getAll()).thenReturn(Observable.just(emptyExchangesDB))
         val exchanges = createExchangesString()
         whenever(cryptoCompareApi.getAllExchanges()).thenReturn(Observable.just(exchanges))
-        val dbExchanges = Exchange.exchangesToDBExchanges(Gson(), exchanges)
+        val dbExchanges = Exchange.exchangesToDBExchanges(exchanges)
         whenever(exchangeDao.insertAll(dbExchanges)).thenReturn(Completable.complete())
 
         val emptyFiatDB = createEmptyFiatsDB()
@@ -87,69 +92,27 @@ class SplashViewModelTest {
         assertThat(loading).isEqualTo(false)
     }
 
+    @Test
+    fun test() {
+        var test = javaClass.getResource("json/exchange_rates_get_all_rates.json")
+
+        println()
+    }
+
+
     private fun createCryptosString(): String {
-        return "{" +
-            "  \"Response\":\"Success\"," +
-            "  \"Message\":\"Coin list succesfully returned!\"," +
-            "  \"Data\":{" +
-            "    \"42\":{" +
-            "      \"Id\":\"4321\"," +
-            "      \"Url\":\"coins42overview\"," +
-            "      \"ImageUrl\":\"media3565071742.jpg\"," +
-            "      \"ContentCreatedOn\":1427211129," +
-            "      \"Name\":\"42\"," +
-            "      \"Symbol\":\"42\"," +
-            "      \"CoinName\":\"42 Coin\"," +
-            "      \"FullName\":\"42 Coin (42)\"," +
-            "      \"Algorithm\":\"Scrypt\"," +
-            "      \"ProofType\":\"PoWPoS\"," +
-            "      \"FullyPremined\":\"0\"," +
-            "      \"TotalCoinSupply\":\"42\"," +
-            "      \"BuiltOn\":\"NA\"," +
-            "      \"SmartContractAddress\":\"NA\"," +
-            "      \"PreMinedValue\":\"NA\"," +
-            "      \"TotalCoinsFreeFloat\":\"NA\"," +
-            "      \"SortOrder\":\"34\"," +
-            "      \"Sponsored\":false," +
-            "      \"Taxonomy\":{" +
-            "        \"Access\":\"\"," +
-            "        \"FCA\":\"\"," +
-            "        \"FINMA\":\"\"," +
-            "        \"Industry\":\"\"," +
-            "        \"CollateralizedAsset\":\"\"," +
-            "        \"CollateralizedAssetType\":\"\"," +
-            "        \"CollateralType\":\"\"," +
-            "        \"CollateralInfo\":\"\"" +
-            "      }," +
-            "      \"IsTrading\":true," +
-            "      \"TotalCoinsMined\":41.99995317," +
-            "      \"BlockNumber\":147668," +
-            "      \"NetHashesPerSecond\":0," +
-            "      \"BlockReward\":0," +
-            "      \"BlockTime\":0" +
-            "    }" +
-            "  }," +
-            "  \"BaseImageUrl\":\"https://www.cryptocompare.com\"," +
-            "  \"BaseLinkUrl\":\"https://www.cryptocompare.com\"," +
-            "  \"RateLimit\":{" +
-            "    " +
-            "  }," +
-            "  \"HasWarning\":false," +
-            "  \"Type\":100" +
-            "}"
+        val jObject = "json/crypto_compare_get_all_crypto.json"
+        return jObject
     }
 
     private fun createExchangesString(): String {
-        return "{\"55com\":{}}"
+        val jObject = "json/crypto_compare_get_all_exchanges.json"
+        return jObject
     }
 
-    private fun createFiats(): ExchangeRatesOld {
-        return ExchangeRatesOld().apply {
-            base = "USD"
-            rates = RatesOld().apply {
-                bgn = 2.00
-            }
-        }
+    private fun createFiats(): String {
+        val jObject = "json/exchange_rates_get_all_rates.json"
+        return jObject
     }
 
     private fun createCryptosDB() = listOf(DBCrypto(
