@@ -54,7 +54,7 @@ dependencies {
     testImplementation 'org.mockito:mockito-core:3.1.0'
     testImplementation 'org.mockito:mockito-inline:3.1.0'
 
-    testImplementation 'org.assertj:assertj-core:3.13.2'
+    testImplementation 'org.assertj:assertj-core:3.14.0'
 
     testImplementation "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
 
@@ -65,12 +65,8 @@ dependencies {
     testImplementation "android.arch.core:core-testing:1.1.1"
 
     testImplementation 'com.squareup.assertj:assertj-android:1.2.0'
-    
-    implementation "com.google.code.gson:gson:2.8.6"
 
-    testImplementation "com.google.code.gson:gson:2.8.6"
-
-    testCompile("com.google.code.gson:gson:2.8.6")
+    implementation 'com.google.guava:guava:24.1-jre'
 
     /* assertThat */
     testCompile("org.assertj:assertj-core:3.11.1")
