@@ -10,25 +10,26 @@ import org.json.JSONObject
 class Exchange {
     companion object {
         fun exchangesToDBExchanges(
-            gson: Gson,
             json: String
         ) : List<DBExchange>{
-            return arrayListOf<DBExchange>().apply {
+            return mutableListOf<DBExchange>().apply {
                 try {
                     val jsonObject = JSONTokener(json).nextValue() as JSONObject
                     val keys = jsonObject.keys()
 
                     while (keys.hasNext()) {
                         val exchange = keys.next()
-                        val innerJsonObject = jsonObject.getString(exchange)
-
-                        val jsonObject2 = JSONTokener(innerJsonObject).nextValue() as JSONObject
-                        val baseCryptos = jsonObject2.keys()
-                        val cryptoAndConversion = arrayListOf<Pair<String, ArrayList<String>>>()
+                        val innerJsonObject = jsonObject.getJSONObject(exchange)
+                        val baseCryptos = innerJsonObject.keys()
+                        val cryptoAndConversion = arrayListOf<Pair<String, List<String>>>()
                         while (baseCryptos.hasNext()) {
                             val baseCrypto = baseCryptos.next()
-                            val conversionCryptos = gson.fromJson(jsonObject2.getString(baseCrypto), arrayListOf<String>()::class.java)
-                            cryptoAndConversion.add(Pair(baseCrypto, conversionCryptos))
+                            val conversionCryptos = innerJsonObject.getJSONArray(baseCrypto)
+
+                            val conversionCryptosString = (0 until conversionCryptos.length())
+                                .map { conversionCryptos.get(it) as String }
+
+                            cryptoAndConversion.add(Pair(baseCrypto, conversionCryptosString))
                         }
                         add(DBExchange(exchange, Cryptos(cryptoAndConversion)))
                     }

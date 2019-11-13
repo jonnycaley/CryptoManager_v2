@@ -16,19 +16,16 @@ class ExchangeRatesOld {
 
     companion object {
         fun ratesToDBFiats(
-            gson: Gson,
-            exchangeRatesOld: ExchangeRatesOld
+            json: String
         ): List<DBFiat> {
             val fiatsArray = arrayListOf<DBFiat>()
             try {
-                val json = gson.toJson(exchangeRatesOld)
-
                 val jObject = JSONObject(json).getJSONObject("rates")
                 val keys = jObject.keys()
                 while (keys.hasNext())
                 {
                     val key = keys.next()
-                    val value = jObject.getString(key)
+                    val value = jObject.getDouble(key)
 
                     fiatsArray.add(
                         DBFiat(
