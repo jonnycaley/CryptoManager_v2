@@ -101,7 +101,7 @@ class SplashViewModel(
         cryptoCompareApi.getAllExchanges()
             .observeOn(schedulers.computation)
             .map {
-                Exchange.exchangesToDBExchanges(gson, it)
+                Exchange.exchangesToDBExchanges(it)
             }
             .flatMap {
                 exchangesDao.insertAll(it).toObservable<Int>()
@@ -141,7 +141,7 @@ class SplashViewModel(
         cryptoCompareApi.getAllCrypto()
             .observeOn(schedulers.computation)
             .map { cryptoJson ->
-                Crypto.cryptoToDBCryptos(gson, cryptoJson)
+                Crypto.cryptosToDBCryptos(cryptoJson)
             }
             .flatMap { dbCrypto ->
                 cryptosDao.insertAll(dbCrypto).toObservable<Int>()
@@ -182,7 +182,7 @@ class SplashViewModel(
         exchangeRatesApi.getFiats()
             .observeOn(schedulers.computation)
             .map { exchangeRates ->
-                ExchangeRatesOld.ratesToDBFiats(gson, exchangeRates)
+                ExchangeRatesOld.ratesToDBFiats(exchangeRates)
             }
             .flatMap { dbFiats ->
                 fiatsDao.insertAll(dbFiats).toObservable<Int>()
