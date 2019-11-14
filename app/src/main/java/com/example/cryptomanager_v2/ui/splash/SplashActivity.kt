@@ -25,8 +25,8 @@ class SplashActivity : AppCompatActivity() {
         viewModel = ViewModelProviders.of(this, factory).get(SplashViewModel::class.java)
 
         viewModel.apply {
-            loading.observe(this@SplashActivity, Observer { exchangeRates ->
-                text_loading.text = loading.value.toString()
+            status.observe(this@SplashActivity, Observer { status ->
+                text_loading.text = status.toString()
             })
         }
     }

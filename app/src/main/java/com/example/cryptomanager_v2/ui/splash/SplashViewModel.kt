@@ -28,7 +28,6 @@ class SplashViewModel(
     private val exchangesDao: DBExchangeDao,
     private val fiatsDao: DBFiatsDao,
     private val cryptosDao: DBCryptosDao,
-    private val gson: Gson,
     private val cryptoCompareApi: CryptoCompareApi
 ): ViewModel() {
 
@@ -38,10 +37,10 @@ class SplashViewModel(
     private val _cryptos = MutableLiveData<Resource<Int>>()
     private val _exchanges = MutableLiveData<Resource<Int>>()
 
-    private val _isLoading = MutableLiveData<Boolean>()
+    private val _status = MutableLiveData<Status>()
 
-    val loading: LiveData<Boolean>
-        get() = _isLoading
+    val status: LiveData<Status>
+        get() = _status
 
     private var fiatsSubject = BehaviorSubject.createDefault<Resource<Int>>(Resource.idle())
     private var cryptosSubject = BehaviorSubject.createDefault<Resource<Int>>(Resource.idle())
@@ -50,12 +49,21 @@ class SplashViewModel(
     init {
         Observables.combineLatest(fiatsSubject, cryptosSubject, exchangesSubject) {
             exchangeRates, cryptos, exchanges ->
-            exchangeRates.status == Status.LOADING || cryptos.status == Status.LOADING || exchanges.status == Status.LOADING
+            if (exchangeRates.status == Status.LOADING || cryptos.status == Status.LOADING || exchanges.status == Status.LOADING) {
+                Status.LOADING
+            } else if (exchangeRates.status == Status.ERROR || cryptos.status == Status.ERROR || exchanges.status == Status.ERROR) {
+                Status.ERROR
+            } else if (exchangeRates.status == Status.SUCCESS && cryptos.status == Status.SUCCESS && exchanges.status == Status.SUCCESS) {
+                Status.SUCCESS
+            } else {
+                Status.IDLE
+            }
         }
             .subscribe {
-                _isLoading.value = it
+                _status.value = it
             }
             .addTo(compositeDisposable)
+
 
         fiatsSubject
             .subscribe {
