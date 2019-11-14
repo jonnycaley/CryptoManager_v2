@@ -18,7 +18,6 @@ class SplashViewModelFactory @Inject constructor(
     private val exchangesDao: DBExchangeDao,
     private val fiatsDao: DBFiatsDao,
     private val cryptosDao: DBCryptosDao,
-    private val gson: Gson,
     private val cryptoCompareApi: CryptoCompareApi
 ) : ViewModelProvider.Factory {
 
@@ -30,7 +29,6 @@ class SplashViewModelFactory @Inject constructor(
                 exchangesDao,
                 fiatsDao,
                 cryptosDao,
-                gson,
                 cryptoCompareApi
             ) as T
         }

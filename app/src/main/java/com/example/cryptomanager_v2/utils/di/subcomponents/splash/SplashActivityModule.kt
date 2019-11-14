@@ -24,7 +24,6 @@ class SplashActivityModule {
         exchangesDao: DBExchangeDao,
         fiatsDao: DBFiatsDao,
         cryptosDao: DBCryptosDao,
-        gson: Gson,
         cryptoCompareApi: CryptoCompareApi
     ) : SplashViewModelFactory {
         return SplashViewModelFactory(
@@ -33,7 +32,6 @@ class SplashActivityModule {
             exchangesDao,
             fiatsDao,
             cryptosDao,
-            gson,
             cryptoCompareApi
         )
     }
