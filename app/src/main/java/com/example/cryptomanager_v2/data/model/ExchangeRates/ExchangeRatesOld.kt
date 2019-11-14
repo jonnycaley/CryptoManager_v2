@@ -30,7 +30,7 @@ class ExchangeRatesOld {
                     fiatsArray.add(
                         DBFiat(
                             name = key,
-                            rate = value.toDouble()
+                            rate = value
                         )
                     )
                 }
