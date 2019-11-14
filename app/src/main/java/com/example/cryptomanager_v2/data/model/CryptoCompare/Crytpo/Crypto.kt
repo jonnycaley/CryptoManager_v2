@@ -85,23 +85,21 @@ class Crypto {
         fun cryptosToDBCryptos(
             json: String
         ) : List<DBCrypto>{
-            val cryptoArray = arrayListOf<DBCrypto>()
-            try {
-                val jObject = JSONObject(json).getJSONObject("Data")
-                val keys = jObject.keys()
-                while (keys.hasNext())
-                {
-                    val name = keys.next()
-                    val value = jObject.getJSONObject(name)
+            return mutableListOf<DBCrypto>().apply {
+                try {
+                    val jObject = JSONObject(json).getJSONObject("Data")
+                    val keys = jObject.keys()
+                    while (keys.hasNext()) {
+                        val name = keys.next()
+                        val value = jObject.getJSONObject(name)
+                        val dBCrypto = cryptoToDBCrypto(value)
 
-                    val dBCrypto = cryptoToDBCrypto(value)
-
-                    cryptoArray.add(dBCrypto)
+                        add(dBCrypto)
+                    }
+                } catch (e: JSONException) {
+                    e.printStackTrace()
                 }
-            } catch (e: JSONException) {
-                e.printStackTrace()
-            }
-            return cryptoArray
+            }.toList()
         }
 
         private fun cryptoToDBCrypto(cryptoInfo: JSONObject) : DBCrypto {
