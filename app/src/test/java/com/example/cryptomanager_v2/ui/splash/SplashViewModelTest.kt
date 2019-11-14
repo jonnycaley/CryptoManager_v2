@@ -27,6 +27,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import org.mockito.junit.MockitoJUnitRunner
+import java.io.File
 
 @RunWith(MockitoJUnitRunner::class)
 class SplashViewModelTest {
@@ -92,27 +93,20 @@ class SplashViewModelTest {
         assertThat(loading).isEqualTo(false)
     }
 
-    @Test
-    fun test() {
-        var test = javaClass.getResource("json/exchange_rates_get_all_rates.json")
-
-        println()
-    }
-
-
     private fun createCryptosString(): String {
-        val jObject = "json/crypto_compare_get_all_crypto.json"
-        return jObject
+        return readJsonFile("json/crypto_compare_get_all_crypto.json")
     }
 
     private fun createExchangesString(): String {
-        val jObject = "json/crypto_compare_get_all_exchanges.json"
-        return jObject
+        return readJsonFile("json/crypto_compare_get_all_exchanges.json")
     }
 
     private fun createFiats(): String {
-        val jObject = "json/exchange_rates_get_all_rates.json"
-        return jObject
+        return readJsonFile("json/exchange_rates_get_all_rates.json")
+    }
+
+    private fun readJsonFile(filePath: String): String {
+        return javaClass.classLoader?.getResource(filePath)?.readText().toString()
     }
 
     private fun createCryptosDB() = listOf(DBCrypto(
