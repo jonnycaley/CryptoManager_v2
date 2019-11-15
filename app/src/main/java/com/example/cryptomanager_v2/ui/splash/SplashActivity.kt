@@ -4,8 +4,9 @@ import android.os.Bundle
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.example.cryptomanager_v2.R
+import com.example.cryptomanager_v2.utils.Status
+import com.example.cryptomanager_v2.utils.exhaustive
 import dagger.android.support.DaggerAppCompatActivity
-import kotlinx.android.synthetic.main.activity_splash.*
 import javax.inject.Inject
 
 class SplashActivity : DaggerAppCompatActivity() {
@@ -18,14 +19,24 @@ class SplashActivity : DaggerAppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        setupToolbar()
+
         setContentView(R.layout.activity_splash)
 
         viewModel = ViewModelProviders.of(this, factory).get(SplashViewModel::class.java)
 
         viewModel.apply {
             status.observe(this@SplashActivity, Observer { status ->
-                text_loading.text = status.toString()
+                when(status) {
+                    Status.LOADING -> {}
+                    Status.ERROR -> {}
+                    Status.SUCCESS -> {}
+                    Status.IDLE -> {}
+                }.exhaustive
             })
         }
+    }
+    private fun setupToolbar() {
+        supportActionBar?.setDisplayShowTitleEnabled(false)
     }
 }
