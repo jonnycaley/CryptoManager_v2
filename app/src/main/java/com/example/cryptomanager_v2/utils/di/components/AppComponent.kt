@@ -8,6 +8,8 @@ import com.example.cryptomanager_v2.utils.di.modules.NetworkModule
 import dagger.BindsInstance
 import dagger.Component
 import dagger.android.AndroidInjectionModule
+import dagger.android.AndroidInjector
+import dagger.android.support.AndroidSupportInjectionModule
 import javax.inject.Singleton
 
 @Singleton
@@ -20,8 +22,7 @@ import javax.inject.Singleton
         AppModule::class
     ]
 )
-interface AppComponent {
-    fun inject(app: App)
+interface AppComponent: AndroidInjector<App> {
 
     @Component.Builder
     interface Builder {
