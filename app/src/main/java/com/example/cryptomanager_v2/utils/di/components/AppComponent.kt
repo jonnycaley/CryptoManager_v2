@@ -2,6 +2,7 @@ package com.example.cryptomanager_v2.utils.di.components
 
 import com.example.cryptomanager_v2.utils.App
 import com.example.cryptomanager_v2.utils.di.ActivityBuilder
+import com.example.cryptomanager_v2.utils.di.modules.AppAssistedModule
 import com.example.cryptomanager_v2.utils.di.modules.AppModule
 import com.example.cryptomanager_v2.utils.di.modules.DatabaseModule
 import com.example.cryptomanager_v2.utils.di.modules.NetworkModule
@@ -19,7 +20,8 @@ import javax.inject.Singleton
         AndroidInjectionModule::class,
         ActivityBuilder::class,
         DatabaseModule::class,
-        AppModule::class
+        AppModule::class,
+        AppAssistedModule::class
     ]
 )
 interface AppComponent: AndroidInjector<App> {

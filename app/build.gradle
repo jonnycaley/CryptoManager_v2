@@ -8,7 +8,7 @@ android {
     buildToolsVersion "29.0.2"
     defaultConfig {
         applicationId "com.example.cryptomanager_v2"
-        minSdkVersion 15
+        minSdkVersion 16
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
@@ -75,10 +75,10 @@ dependencies {
     /* assertThat */
     testCompile("org.assertj:assertj-core:3.11.1")
 
-    /* addes json for testing */
+    /* Adds json for testing */
     testCompile("org.json:json:20140107")
 
-    //dagger
+    /* dagger */
     def dagger_version = "2.24"
     implementation "com.google.dagger:dagger:$dagger_version"
     implementation "com.google.dagger:dagger-android:$dagger_version"
@@ -87,7 +87,7 @@ dependencies {
     kapt "com.google.dagger:dagger-compiler:$dagger_version"
     kapt 'com.google.dagger:dagger-android-processor:2.20'
 
-    //rxjava
+    /* rxjava */
     def rxjava_version = "2.1.1"
     implementation "io.reactivex.rxjava2:rxandroid:$rxjava_version"
 
@@ -118,7 +118,7 @@ dependencies {
     /* LiveData & ViewModel */
     implementation 'android.arch.lifecycle:extensions:1.1.1'
 
-    // Data binding
+    /* Data binding */
     kapt "com.android.databinding:compiler:3.1.4"
 
     /* Room database */
@@ -131,9 +131,15 @@ dependencies {
     def rxkotlin_version = "2.4.0"
     implementation("io.reactivex.rxjava2:rxkotlin:$rxkotlin_version")
 
-
     /* retrofit addition - allows to return data as a string instead of a gson object */
     implementation("com.squareup.retrofit2:converter-scalars:$retrofit_version")
 
-    /* AndroidJUnit*/
+    /* MvRx */
+    implementation 'com.airbnb.android:mvrx:1.3.0'
+
+    /* Assisted Inject */
+    compileOnly 'com.squareup.inject:assisted-inject-annotations:0.5.1'
+    kapt 'com.squareup.inject:assisted-inject-processor:0.5.1'
+    compileOnly 'com.squareup.inject:assisted-inject-annotations-dagger2:0.5.1'
+    kapt 'com.squareup.inject:assisted-inject-processor-dagger2:0.5.1'
 }
