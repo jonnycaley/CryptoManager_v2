@@ -25,13 +25,6 @@ object NetworkModule {
     @Provides
     @Singleton
     @JvmStatic
-    internal fun provideGsonConverterFactory(): GsonConverterFactory {
-        return GsonConverterFactory.create()
-    }
-
-    @Provides
-    @Singleton
-    @JvmStatic
     internal fun provideRxJava2CallAdapterFactory(
         schedulers: AppSchedulers
     ): RxJava2CallAdapterFactory {
@@ -57,13 +50,15 @@ object NetworkModule {
     @JvmStatic
     @EXCHANGERATES
     internal fun provideExchangeRatesRetrofit(
-        gsonConverterFactory: GsonConverterFactory,
-        rxJava2CallAdapterFactory: RxJava2CallAdapterFactory
+        scalarsConverterFactory: ScalarsConverterFactory,
+        rxJava2CallAdapterFactory: RxJava2CallAdapterFactory,
+        okHttpClient: OkHttpClient
     ): Retrofit {
         return Retrofit.Builder()
             .baseUrl(Constants.URL_EXCHANGE_RATES)
-            .addConverterFactory(gsonConverterFactory)
+            .addConverterFactory(scalarsConverterFactory)
             .addCallAdapterFactory(rxJava2CallAdapterFactory)
+            .client(okHttpClient)
             .build()
     }
 
