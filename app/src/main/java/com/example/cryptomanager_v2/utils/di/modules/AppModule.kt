@@ -15,10 +15,4 @@ class AppModule {
     internal fun provideContext(application: App): Context {
         return application
     }
-
-    @Singleton
-    @Provides
-    internal fun provideUtils(context: Context): Utils {
-        return Utils(context)
-    }
 }
