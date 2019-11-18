@@ -12,6 +12,8 @@ import com.example.cryptomanager_v2.data.model.cryptocompare.crytpo.Crypto
 import com.example.cryptomanager_v2.data.model.ExchangeRates.ExchangeRatesOld
 import com.example.cryptomanager_v2.data.model.cryptocompare.exchanges.Exchange
 import com.example.cryptomanager_v2.data.network.CryptoCompareApi
+import com.example.cryptomanager_v2.utils.NoConnectivityException
+import com.example.cryptomanager_v2.utils.NoInternetException
 import com.example.cryptomanager_v2.utils.Resource
 import com.example.cryptomanager_v2.utils.Status
 import com.example.cryptomanager_v2.utils.di.AppSchedulers
@@ -49,15 +51,21 @@ class SplashViewModel(
     init {
         Observables.combineLatest(fiatsSubject, cryptosSubject, exchangesSubject) {
             exchangeRates, cryptos, exchanges ->
-            if (exchangeRates.status == Status.LOADING || cryptos.status == Status.LOADING || exchanges.status == Status.LOADING) {
-                Status.LOADING
-            } else if (exchangeRates.status == Status.ERROR || cryptos.status == Status.ERROR || exchanges.status == Status.ERROR) {
-                Status.ERROR
-            } else if (exchangeRates.status == Status.SUCCESS && cryptos.status == Status.SUCCESS && exchanges.status == Status.SUCCESS) {
-                Status.SUCCESS
-            } else {
-                Status.IDLE
-            }
+
+            val arrayStates = arrayOf(exchangeRates.status, cryptos.status, exchanges.status)
+
+            arrayStates
+                .filterIsInstance<Status.LOADING>()
+                .map{ return@combineLatest Status.LOADING }
+
+            arrayStates
+                .filterIsInstance<Status.ERROR>()
+                .map{ return@combineLatest Status.ERROR(it.reason) }
+
+            if(arrayStates.filterIsInstance<Status.SUCCESS>().size == arrayStates.size)
+                return@combineLatest Status.SUCCESS
+
+            Status.IDLE
         }
             .subscribe {
                 _status.value = it
@@ -102,6 +110,7 @@ class SplashViewModel(
                 else
                     getExchanges()
             }
+            .addTo(compositeDisposable)
     }
 
     private fun getExchanges() {
@@ -141,7 +150,7 @@ class SplashViewModel(
                     cryptosSubject.onNext(Resource.success())
                 else
                     getCryptos()
-            }
+            }.addTo(compositeDisposable)
     }
 
     private fun getCryptos() {
@@ -182,7 +191,16 @@ class SplashViewModel(
                     fiatsSubject.onNext(Resource.success())
                 else
                     getFiats()
-            }
+            }.addTo(compositeDisposable)
+    }
+
+    fun retry() {
+        if(fiatsSubject.value?.status is Status.ERROR)
+            getFiats()
+        if(exchangesSubject.value?.status is Status.ERROR)
+            getExchanges()
+        if(cryptosSubject.value?.status is Status.ERROR)
+            getCryptos()
     }
 
     fun getFiats() {
@@ -208,7 +226,6 @@ class SplashViewModel(
             })
             .addTo(compositeDisposable)
     }
-
     override fun onCleared() {
         super.onCleared()
         compositeDisposable.dispose()
