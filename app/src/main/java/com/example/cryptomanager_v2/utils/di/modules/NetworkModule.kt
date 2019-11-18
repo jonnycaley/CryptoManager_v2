@@ -2,18 +2,17 @@ package com.example.cryptomanager_v2.utils.di.modules
 
 import com.example.cryptomanager_v2.data.network.CryptoCompareApi
 import com.example.cryptomanager_v2.data.network.ExchangeRatesApi
-import com.example.cryptomanager_v2.utils.di.AppSchedulers
 import com.example.cryptomanager_v2.utils.Constants
+import com.example.cryptomanager_v2.utils.NoInternetConnectionInterceptor
+import com.example.cryptomanager_v2.utils.di.AppSchedulers
 import com.google.gson.Gson
 import dagger.Module
 import dagger.Provides
 import dagger.Reusable
-import okhttp3.HttpUrl
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
-import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.lang.annotation.Documented
 import javax.inject.Qualifier
@@ -90,7 +89,8 @@ object NetworkModule {
     @Singleton
     @JvmStatic
     fun provideOkHttpClient(
-        httpLoggingInterceptor: HttpLoggingInterceptor
+        httpLoggingInterceptor: HttpLoggingInterceptor,
+        noInternetConnectionInterceptor: NoInternetConnectionInterceptor
     ): OkHttpClient {
         val httpClient = OkHttpClient.Builder()
 
@@ -109,6 +109,7 @@ object NetworkModule {
             chain.proceed(request)
         }
         httpClient.addInterceptor(httpLoggingInterceptor)
+        httpClient.addInterceptor(noInternetConnectionInterceptor)
         return httpClient.build()
     }
 
