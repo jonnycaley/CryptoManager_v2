@@ -12,6 +12,7 @@ import com.example.cryptomanager_v2.data.model.cryptocompare.crytpo.Crypto
 import com.example.cryptomanager_v2.data.model.cryptocompare.exchanges.Exchange
 import com.example.cryptomanager_v2.data.network.CryptoCompareApi
 import com.example.cryptomanager_v2.data.network.ExchangeRatesApi
+import com.example.cryptomanager_v2.utils.NoConnectivityException
 import com.example.cryptomanager_v2.utils.Status
 import com.example.cryptomanager_v2.utils.TestSchedulers
 import com.example.cryptomanager_v2.utils.di.AppSchedulers
@@ -92,7 +93,7 @@ class SplashViewModelTest {
     fun givenGetAllExchangesError_whenInit_thenError() {
         val emptyExchangesDB = createEmptyExchangesDB()
         whenever(exchangeDao.getAll()).thenReturn(Observable.just(emptyExchangesDB))
-        val error = RuntimeException()
+        val error = NoConnectivityException()
         whenever(cryptoCompareApi.getAllExchanges()).thenReturn(Observable.error(error))
 
         val emptyFiatDB = createEmptyFiatsDB()
@@ -110,7 +111,7 @@ class SplashViewModelTest {
         viewModel = createViewModel()
         viewModel.status.observeForever { status = it }
 
-        assertThat(status).isEqualTo(Status.ERROR)
+        assertThat(status).isEqualTo(Status.ERROR("No network available, please check your WiFi or Data connection"))
     }
 
     @Test
@@ -124,7 +125,7 @@ class SplashViewModelTest {
 
         val emptyFiatDB = createEmptyFiatsDB()
         whenever(fiatsDao.getAll()).thenReturn(Observable.just(emptyFiatDB))
-        val error = RuntimeException()
+        val error = NoConnectivityException()
         whenever(exchangeRatesApi.getFiats()).thenReturn(Observable.error(error))
 
         val emptyCryptosDB = createEmptyCryptosDB()
@@ -136,7 +137,7 @@ class SplashViewModelTest {
         viewModel = createViewModel()
         viewModel.status.observeForever { status = it }
 
-        assertThat(status).isEqualTo(Status.ERROR)
+        assertThat(status).isEqualTo(Status.ERROR("No network available, please check your WiFi or Data connection"))
     }
 
     @Test
@@ -156,13 +157,13 @@ class SplashViewModelTest {
 
         val emptyCryptosDB = createEmptyCryptosDB()
         whenever(cryptosDao.getAll()).thenReturn(Observable.just(emptyCryptosDB))
-        val error = RuntimeException()
+        val error = NoConnectivityException()
         whenever(cryptoCompareApi.getAllCrypto()).thenReturn(Observable.error(error))
 
         viewModel = createViewModel()
         viewModel.status.observeForever { status = it }
 
-        assertThat(status).isEqualTo(Status.ERROR)
+        assertThat(status).isEqualTo(Status.ERROR("No network available, please check your WiFi or Data connection"))
     }
 
     private fun createCryptosString(): String {
