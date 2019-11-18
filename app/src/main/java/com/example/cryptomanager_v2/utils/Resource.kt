@@ -7,7 +7,7 @@ data class Resource<out T>(val status: Status, val data: T?, val message: String
         }
 
         fun <T> error(msg: String?): Resource<T> {
-            return Resource(Status.ERROR, null, msg)
+            return Resource(Status.ERROR(msg), null, msg)
         }
 
         fun <T> loading(): Resource<T> {
@@ -21,7 +21,7 @@ data class Resource<out T>(val status: Status, val data: T?, val message: String
 
 sealed class Status {
     object SUCCESS : Status()
-    object ERROR: Status()
+    data class ERROR(val reason: String?): Status()
     object LOADING: Status()
     object IDLE: Status()
 }
