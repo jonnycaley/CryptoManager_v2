@@ -52,7 +52,7 @@ class SplashViewModel(
         Observables.combineLatest(fiatsSubject, cryptosSubject, exchangesSubject) {
             exchangeRates, cryptos, exchanges ->
 
-            val arrayStates = arrayOf(exchangeRates.status, cryptos.status, exchanges.status)
+            val arrayStates = arrayOf(exchangeRates, cryptos, exchanges)
 
             arrayStates
                 .filterIsInstance<Status.LOADING>()
@@ -130,7 +130,7 @@ class SplashViewModel(
             }
             .subscribe ({ exchanges ->
             },{
-                exchangesSubject.onNext(Resource.error(it.message))
+                exchangesSubject.onNext(Resource.error(it.localizedMessage))
             },{
                 exchangesSubject.onNext(Resource.success())
             })
@@ -171,7 +171,7 @@ class SplashViewModel(
             .subscribe ({
 
             },{
-                cryptosSubject.onNext(Resource.error(it.message))
+                cryptosSubject.onNext(Resource.error(it.localizedMessage))
             },{
                 cryptosSubject.onNext(Resource.success())
             })
@@ -220,7 +220,7 @@ class SplashViewModel(
             }
             .subscribe ({
             },{
-                fiatsSubject.onNext(Resource.error(it.message))
+                fiatsSubject.onNext(Resource.error(it.localizedMessage))
             }, {
                 fiatsSubject.onNext(Resource.success())
             })
