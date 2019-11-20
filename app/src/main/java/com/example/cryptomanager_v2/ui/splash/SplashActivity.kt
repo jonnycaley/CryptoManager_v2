@@ -9,11 +9,11 @@ import com.example.cryptomanager_v2.ui.home.HomeActivity
 import com.example.cryptomanager_v2.utils.Status
 import com.example.cryptomanager_v2.utils.exhaustive
 import dagger.android.support.DaggerAppCompatActivity
+import io.reactivex.rxkotlin.Observables
 import kotlinx.android.synthetic.main.activity_splash.*
 import javax.inject.Inject
 
-@Suppress("IMPLICIT_CAST_TO_ANY")
-class SplashActivity : DaggerAppCompatActivity() {
+class SplashActivity: DaggerAppCompatActivity() {
 
     @Inject
     lateinit var factory: SplashViewModelFactory
