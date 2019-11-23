@@ -16,40 +16,28 @@ object DatabaseModule {
     @Provides
     @Singleton
     @JvmStatic
-    fun providesRoomDatabase(
-        context: Context
-    ): AppDatabase {
-        return Room.databaseBuilder(
-            context,
-            AppDatabase::class.java,
-            "db"
-        ).build()
+    fun providesRoomDatabase(context: Context): AppDatabase {
+        return Room.databaseBuilder(context, AppDatabase::class.java, "db").build()
     }
 
     @Provides
     @Singleton
     @JvmStatic
-    fun provideExchangesDao(
-        db: AppDatabase
-    ): DBExchangeDao {
+    fun provideExchangesDao(db: AppDatabase): DBExchangeDao {
         return db.exchangesDao()
     }
 
     @Provides
     @Singleton
     @JvmStatic
-    fun provideFiatsDao(
-        db: AppDatabase
-    ): DBFiatsDao {
+    fun provideFiatsDao(db: AppDatabase): DBFiatsDao {
         return db.fiatsDao()
     }
 
     @Provides
     @Singleton
     @JvmStatic
-    fun provideCryptosDao(
-        db: AppDatabase
-    ): DBCryptosDao {
+    fun provideCryptosDao(db: AppDatabase): DBCryptosDao {
         return db.cryptosDao()
     }
 }
