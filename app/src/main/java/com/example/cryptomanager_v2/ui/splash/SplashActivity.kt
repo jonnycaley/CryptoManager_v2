@@ -1,5 +1,6 @@
 package com.example.cryptomanager_v2.ui.splash
 
+import android.content.Context
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.Observer

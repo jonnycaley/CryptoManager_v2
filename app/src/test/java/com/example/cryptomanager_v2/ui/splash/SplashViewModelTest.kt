@@ -8,15 +8,13 @@ import com.example.cryptomanager_v2.data.db.exchanges.DBExchange
 import com.example.cryptomanager_v2.data.db.exchanges.DBExchangeDao
 import com.example.cryptomanager_v2.data.db.fiats.DBFiat
 import com.example.cryptomanager_v2.data.db.fiats.DBFiatsDao
-import com.example.cryptomanager_v2.data.model.cryptocompare.crytpo.Crypto
 import com.example.cryptomanager_v2.data.model.cryptocompare.exchanges.Exchange
 import com.example.cryptomanager_v2.data.network.CryptoCompareApi
 import com.example.cryptomanager_v2.data.network.ExchangeRatesApi
 import com.example.cryptomanager_v2.utils.NoConnectivityException
 import com.example.cryptomanager_v2.utils.Status
-import com.example.cryptomanager_v2.utils.TestSchedulers
+import com.example.cryptomanager_v2.utils.TestAppSchedulers
 import com.example.cryptomanager_v2.utils.di.AppSchedulers
-import com.google.gson.Gson
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
 import io.reactivex.Completable
@@ -40,7 +38,7 @@ class SplashViewModelTest {
     private var fiatsDao: DBFiatsDao = mock()
     private var cryptoCompareApi: CryptoCompareApi = mock()
 
-    private var testSchedulers: AppSchedulers = TestSchedulers.get()
+    private var testSchedulers: AppSchedulers = TestAppSchedulers.get()
 
     private lateinit var viewModel: SplashViewModel
 
