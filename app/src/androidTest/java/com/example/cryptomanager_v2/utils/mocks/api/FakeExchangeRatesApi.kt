@@ -5,13 +5,8 @@ import io.reactivex.Observable
 
 class FakeExchangeRatesApi: ExchangeRatesApi {
 
-    private val responses: ArrayList<Any> = arrayListOf()
-
+    val getFiatsResponses: ArrayList<Observable<String>> = arrayListOf()
     override fun getFiats(): Observable<String> {
-        return responses.first() as Observable<String>
-    }
-
-    fun addFiatResponse(response: Observable<String>) {
-        responses.add(response)
+        return getFiatsResponses.removeAt(0)
     }
 }

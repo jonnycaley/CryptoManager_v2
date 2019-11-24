@@ -7,13 +7,13 @@ import io.reactivex.Observable
 
 class FakeDBExchangesDao: DBExchangeDao {
 
-    private val responses: ArrayList<Any> = arrayListOf()
-
+    val getAllResponses: ArrayList<Observable<List<DBExchange>>> = arrayListOf()
     override fun getAll(): Observable<List<DBExchange>> {
-        return responses.first() as Observable<List<DBExchange>>
+        return getAllResponses.removeAt(0)
     }
 
+    val insertAllResponses: ArrayList<Completable> = arrayListOf()
     override fun insertAll(exchanges: List<DBExchange>): Completable {
-        return responses.first() as Completable
+        return insertAllResponses.removeAt(0)
     }
 }
