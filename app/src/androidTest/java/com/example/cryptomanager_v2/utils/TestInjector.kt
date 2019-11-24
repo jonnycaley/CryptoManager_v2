@@ -11,7 +11,7 @@ class TestInjector(private val testApplicationModule: TestAppModule) {
         DaggerTestAppComponent
             .builder()
             .appModule(testApplicationModule)
-            .create(app)
+            .build()
             .inject(app)
     }
 }
