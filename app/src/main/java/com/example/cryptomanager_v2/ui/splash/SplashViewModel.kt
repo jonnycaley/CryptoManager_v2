@@ -56,14 +56,14 @@ class SplashViewModel(
 
             arrayStates
                 .filterIsInstance<Status.LOADING>()
-                .map{ return@combineLatest Status.LOADING }
+                .map{ Status.LOADING }
 
             arrayStates
                 .filterIsInstance<Status.ERROR>()
-                .map{ return@combineLatest Status.ERROR(it.reason) }
+                .map{ Status.ERROR(it.reason) }
 
             if(arrayStates.filterIsInstance<Status.SUCCESS>().size == arrayStates.size)
-                return@combineLatest Status.SUCCESS
+                Status.SUCCESS
 
             Status.IDLE
         }
