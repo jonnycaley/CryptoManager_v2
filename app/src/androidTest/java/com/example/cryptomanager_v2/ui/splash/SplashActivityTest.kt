@@ -2,9 +2,12 @@ package com.example.cryptomanager_v2.ui.splash
 
 import androidx.test.core.app.ActivityScenario
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.example.cryptomanager_v2.data.db.exchanges.DBExchange
+import com.example.cryptomanager_v2.utils.TestAppComponent
 import com.example.cryptomanager_v2.utils.TestAppModule
 import com.example.cryptomanager_v2.utils.TestInjector
 import com.example.cryptomanager_v2.utils.mocks.api.FakeExchangeRatesApi
+import com.example.cryptomanager_v2.utils.mocks.db.FakeDBExchangesDao
 import com.example.cryptomanager_v2.utils.mocks.db.FakeDBFiatsDao
 import io.reactivex.Observable
 import org.junit.Before
@@ -18,16 +21,25 @@ class SplashActivityTest {
 
     lateinit var scenario: ActivityScenario<SplashActivity>
 
-    private var dbFiatsDao: FakeDBFiatsDao = FakeDBFiatsDao()
-    private var exchangeRatesApi: FakeExchangeRatesApi = FakeExchangeRatesApi()
+    private lateinit var testComponent: TestAppComponent
+    private lateinit var fakeDBExchangesDao: FakeDBExchangesDao
 
     @Before
     fun setUp() {
         MockitoAnnotations.initMocks(this)
+        testComponent = TestInjector().initComponent()
+        fakeDBExchangesDao = (testComponent.fakeDBExchangesDao() as FakeDBExchangesDao)
     }
 
     @Test
     fun test() {
+
+        fakeDBExchangesDao.getAllResponses.add((Observable.just(listOf(
+            DBExchange(
+                exchangeName = "Test woooo",
+                cryptos = null
+            )
+        ))))
 
         launchActivity()
 
@@ -36,7 +48,7 @@ class SplashActivityTest {
     }
 
     private fun launchActivity() {
-        TestInjector(TestAppModule()).inject()
+        TestInjector().inject(testComponent)
         scenario = androidx.test.core.app.launchActivity()
     }
 }
