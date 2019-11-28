@@ -4,16 +4,12 @@ import androidx.test.core.app.ActivityScenario
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.cryptomanager_v2.data.db.exchanges.DBExchange
 import com.example.cryptomanager_v2.utils.TestAppComponent
-import com.example.cryptomanager_v2.utils.TestAppModule
 import com.example.cryptomanager_v2.utils.TestInjector
-import com.example.cryptomanager_v2.utils.mocks.api.FakeExchangeRatesApi
 import com.example.cryptomanager_v2.utils.mocks.db.FakeDBExchangesDao
-import com.example.cryptomanager_v2.utils.mocks.db.FakeDBFiatsDao
 import io.reactivex.Observable
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mockito
 import org.mockito.MockitoAnnotations
 
 @RunWith(AndroidJUnit4::class)
@@ -28,7 +24,9 @@ class SplashActivityTest {
     fun setUp() {
         MockitoAnnotations.initMocks(this)
         testComponent = TestInjector().initComponent()
-        fakeDBExchangesDao = (testComponent.fakeDBExchangesDao() as FakeDBExchangesDao)
+        testComponent.apply {
+            fakeDBExchangesDao = dbExhangeDao() as FakeDBExchangesDao
+        }
     }
 
     @Test
