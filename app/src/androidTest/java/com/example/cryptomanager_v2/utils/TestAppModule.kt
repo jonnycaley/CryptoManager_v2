@@ -17,41 +17,36 @@ import javax.inject.Singleton
 
 @Module
 class TestAppModule(
-    private val exchangeRatesApi: ExchangeRatesApi = FakeExchangeRatesApi(),
-    private val cryptoCompareApi: CryptoCompareApi = FakeCryptoCompareApi(),
-    private val dBExchangeDao: DBExchangeDao = FakeDBExchangesDao(),
-    private val dbFiatsDao: DBFiatsDao = FakeDBFiatsDao(),
-    private val dbCryptosDao: DBCryptosDao = FakeDBCryptosDao()
 ) {
 
     @Provides
     @Singleton
     fun providesExchangeRatesApi(): ExchangeRatesApi {
-        return exchangeRatesApi
+        return FakeExchangeRatesApi()
     }
 
     @Provides
     @Singleton
     fun providesCrypotCompareApi(): CryptoCompareApi {
-        return cryptoCompareApi
+        return FakeCryptoCompareApi()
     }
 
     @Provides
     @Singleton
-    fun providesDBExchangesDao(): DBExchangeDao {
-        return dBExchangeDao
+    fun providesDBExchangesDao(fakeDBExchangesDao: FakeDBExchangesDao): DBExchangeDao {
+        return fakeDBExchangesDao
     }
 
     @Provides
     @Singleton
     fun providesDBFiatsDao(): DBFiatsDao {
-        return dbFiatsDao
+        return FakeDBFiatsDao()
     }
 
     @Provides
     @Singleton
     fun providesDBCryptosDao(): DBCryptosDao {
-        return dbCryptosDao
+        return FakeDBCryptosDao()
     }
 
     @Provides
