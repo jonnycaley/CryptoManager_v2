@@ -24,5 +24,5 @@ import javax.inject.Singleton
     ]
 )
 interface TestAppComponent : AndroidInjector<TestApp> {
-    fun fakeDBExchangesDao(): DBExchangeDao
+    fun dbExhangeDao(): DBExchangeDao
 }
