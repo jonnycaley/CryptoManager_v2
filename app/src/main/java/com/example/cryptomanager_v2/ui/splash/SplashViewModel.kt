@@ -91,9 +91,9 @@ class SplashViewModel(
             }
             .addTo(compositeDisposable)
 
+        checkExchangesDB()
         checkFiatsDB()
         checkCryptosDB()
-        checkExchangesDB()
     }
 
     private fun checkExchangesDB() {
