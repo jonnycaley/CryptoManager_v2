@@ -2,8 +2,9 @@ package com.example.cryptomanager_v2.utils.mocks.api
 
 import com.example.cryptomanager_v2.data.network.CryptoCompareApi
 import io.reactivex.Observable
+import javax.inject.Inject
 
-class FakeCryptoCompareApi: CryptoCompareApi {
+class FakeCryptoCompareApi @Inject constructor(): CryptoCompareApi {
 
     val getAllCryptoResponses: ArrayList<Observable<String>> = arrayListOf()
     override fun getAllCrypto(): Observable<String> {

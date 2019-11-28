@@ -4,8 +4,9 @@ import com.example.cryptomanager_v2.data.db.fiats.DBFiat
 import com.example.cryptomanager_v2.data.db.fiats.DBFiatsDao
 import io.reactivex.Completable
 import io.reactivex.Observable
+import javax.inject.Inject
 
-class FakeDBFiatsDao: DBFiatsDao {
+class FakeDBFiatsDao @Inject constructor(): DBFiatsDao {
 
     val getAllResponses: ArrayList<Observable<List<DBFiat>>> = arrayListOf()
     override fun getAll(): Observable<List<DBFiat>> {
