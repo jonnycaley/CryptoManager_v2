@@ -4,7 +4,7 @@ import com.example.cryptomanager_v2.data.network.CryptoCompareApi
 import com.example.cryptomanager_v2.data.network.ExchangeRatesApi
 import com.example.cryptomanager_v2.utils.Constants
 import com.example.cryptomanager_v2.utils.NoInternetConnectionInterceptor
-import com.example.cryptomanager_v2.utils.di.AppSchedulers
+import com.example.cryptomanager_v2.utils.AppSchedulers
 import com.google.gson.Gson
 import dagger.Module
 import dagger.Provides

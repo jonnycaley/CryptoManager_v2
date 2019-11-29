@@ -9,6 +9,7 @@ import com.example.cryptomanager_v2.utils.di.ActivityBuilder
 import com.example.cryptomanager_v2.utils.di.modules.FakeDatabaseModule
 import com.example.cryptomanager_v2.utils.di.modules.FakeNetworkModule
 import dagger.Component
+import dagger.android.AndroidInjectionModule
 import dagger.android.AndroidInjector
 import dagger.android.support.AndroidSupportInjectionModule
 import javax.inject.Singleton
@@ -20,7 +21,7 @@ import javax.inject.Singleton
         FakeDatabaseModule::class,
         TestAppModule::class,
         ActivityBuilder::class,
-        AndroidSupportInjectionModule::class
+        AndroidInjectionModule::class
     ]
 )
 interface TestAppComponent : AndroidInjector<TestApp> {

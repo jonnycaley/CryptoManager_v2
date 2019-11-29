@@ -14,7 +14,7 @@ import com.example.cryptomanager_v2.data.network.ExchangeRatesApi
 import com.example.cryptomanager_v2.utils.NoConnectivityException
 import com.example.cryptomanager_v2.utils.Status
 import com.example.cryptomanager_v2.utils.TestAppSchedulers
-import com.example.cryptomanager_v2.utils.di.AppSchedulers
+import com.example.cryptomanager_v2.utils.AppSchedulers
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
 import io.reactivex.Completable

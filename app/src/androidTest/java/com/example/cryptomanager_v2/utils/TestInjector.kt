@@ -1,12 +1,8 @@
 package com.example.cryptomanager_v2.utils
 
 import androidx.test.platform.app.InstrumentationRegistry
-import com.example.cryptomanager_v2.data.db.exchanges.DBExchange
-import com.example.cryptomanager_v2.data.db.fiats.DBFiat
-import com.example.cryptomanager_v2.utils.di.components.DaggerAppComponent
-import com.example.cryptomanager_v2.utils.mocks.db.FakeDBExchangesDao
-import com.example.cryptomanager_v2.utils.mocks.db.FakeDBFiatsDao
-import io.reactivex.Observable
+import com.example.cryptomanager_v2.utils.di.components.DaggerTestAppComponent
+import com.example.cryptomanager_v2.utils.di.components.TestAppComponent
 
 class TestInjector {
 
@@ -15,7 +11,8 @@ class TestInjector {
 
     fun initComponent(): TestAppComponent {
         return DaggerTestAppComponent
-            .create()
+            .builder()
+            .build()
     }
 
     fun inject(component: TestAppComponent) {

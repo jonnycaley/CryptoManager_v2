@@ -1,4 +1,4 @@
-package com.example.cryptomanager_v2.utils.di
+package com.example.cryptomanager_v2.utils
 
 import io.reactivex.Scheduler
 import io.reactivex.android.schedulers.AndroidSchedulers
