@@ -7,7 +7,7 @@ import com.example.cryptomanager_v2.data.db.cryptos.DBCrypto
 import com.example.cryptomanager_v2.data.db.cryptos.DBCryptosDao
 import com.example.cryptomanager_v2.data.db.exchanges.CryptosTypeConverter
 import com.example.cryptomanager_v2.data.db.exchanges.DBExchange
-import com.example.cryptomanager_v2.data.db.exchanges.DBExchangeDao
+import com.example.cryptomanager_v2.data.db.exchanges.DBExchangesDao
 import com.example.cryptomanager_v2.data.db.fiats.DBFiat
 import com.example.cryptomanager_v2.data.db.fiats.DBFiatsDao
 
@@ -16,5 +16,5 @@ import com.example.cryptomanager_v2.data.db.fiats.DBFiatsDao
 abstract class AppDatabase: RoomDatabase() {
     abstract fun fiatsDao(): DBFiatsDao
     abstract fun cryptosDao(): DBCryptosDao
-    abstract fun exchangesDao(): DBExchangeDao
+    abstract fun exchangesDao(): DBExchangesDao
 }

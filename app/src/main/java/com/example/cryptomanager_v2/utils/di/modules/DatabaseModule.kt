@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.example.cryptomanager_v2.data.db.AppDatabase
 import com.example.cryptomanager_v2.data.db.cryptos.DBCryptosDao
-import com.example.cryptomanager_v2.data.db.exchanges.DBExchangeDao
+import com.example.cryptomanager_v2.data.db.exchanges.DBExchangesDao
 import com.example.cryptomanager_v2.data.db.fiats.DBFiatsDao
 import dagger.Module
 import dagger.Provides
@@ -23,7 +23,7 @@ object DatabaseModule {
     @Provides
     @Singleton
     @JvmStatic
-    fun provideExchangesDao(db: AppDatabase): DBExchangeDao {
+    fun provideExchangesDao(db: AppDatabase): DBExchangesDao {
         return db.exchangesDao()
     }
 

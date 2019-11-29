@@ -8,7 +8,7 @@ import io.reactivex.Completable
 import io.reactivex.Observable
 
 @Dao
-interface DBExchangeDao {
+interface DBExchangesDao {
 
     @Query("SELECT * FROM DBExchange")
     fun getAll(): Observable<List<DBExchange>>

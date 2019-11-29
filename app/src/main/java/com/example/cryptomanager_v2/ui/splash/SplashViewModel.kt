@@ -6,18 +6,15 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.cryptomanager_v2.data.network.ExchangeRatesApi
 import com.example.cryptomanager_v2.data.db.cryptos.DBCryptosDao
-import com.example.cryptomanager_v2.data.db.exchanges.DBExchangeDao
+import com.example.cryptomanager_v2.data.db.exchanges.DBExchangesDao
 import com.example.cryptomanager_v2.data.db.fiats.DBFiatsDao
 import com.example.cryptomanager_v2.data.model.cryptocompare.crytpo.Crypto
 import com.example.cryptomanager_v2.data.model.ExchangeRates.ExchangeRatesOld
 import com.example.cryptomanager_v2.data.model.cryptocompare.exchanges.Exchange
 import com.example.cryptomanager_v2.data.network.CryptoCompareApi
-import com.example.cryptomanager_v2.utils.NoConnectivityException
-import com.example.cryptomanager_v2.utils.NoInternetException
 import com.example.cryptomanager_v2.utils.Resource
 import com.example.cryptomanager_v2.utils.Status
 import com.example.cryptomanager_v2.utils.di.AppSchedulers
-import com.google.gson.Gson
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.Observables
 import io.reactivex.rxkotlin.addTo
@@ -27,7 +24,7 @@ import io.reactivex.subjects.BehaviorSubject
 class SplashViewModel(
     private val exchangeRatesApi: ExchangeRatesApi,
     private val schedulers: AppSchedulers,
-    private val exchangesDao: DBExchangeDao,
+    private val exchangesDao: DBExchangesDao,
     private val fiatsDao: DBFiatsDao,
     private val cryptosDao: DBCryptosDao,
     private val cryptoCompareApi: CryptoCompareApi
