@@ -3,9 +3,9 @@ package com.example.cryptomanager_v2.ui.splash
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.example.cryptomanager_v2.R
-import com.example.cryptomanager_v2.data.db.fiats.DBFiatsDao
 import com.example.cryptomanager_v2.ui.home.HomeActivity
 import com.example.cryptomanager_v2.utils.Status
 import dagger.android.support.DaggerAppCompatActivity
@@ -15,7 +15,7 @@ import javax.inject.Inject
 class SplashActivity: DaggerAppCompatActivity() {
 
     @Inject
-    lateinit var factory: SplashViewModelFactory
+    lateinit var factory: ViewModelProvider.Factory
 
     private lateinit var viewModel: SplashViewModel
 
@@ -26,7 +26,7 @@ class SplashActivity: DaggerAppCompatActivity() {
 
         setContentView(R.layout.activity_splash)
 
-        viewModel = ViewModelProviders.of(this, factory).get(SplashViewModel::class.java)
+        viewModel = ViewModelProviders.of(this, factory)[SplashViewModel::class.java]
 
         viewModel.apply {
             status.observe(this@SplashActivity, Observer { status ->
@@ -34,19 +34,16 @@ class SplashActivity: DaggerAppCompatActivity() {
                 progress_bar.visibility = View.GONE
                 when(status) {
                     is Status.LOADING -> {
-                        text_loading.text = "Loading data..."
-                        progress_bar.visibility = View.VISIBLE
+                        showLoading()
                     }
                     is Status.ERROR -> {
-                        text_loading.text = status.reason
-                        text_retry.visibility = View.VISIBLE
+                        showError(status)
                     }
                     is Status.SUCCESS -> {
-                        text_loading.text = "Success!"
-                        HomeActivity.create(this@SplashActivity)
+                        showSuccess()
                     }
                     is Status.IDLE -> {
-                        text_loading.text = "Idle..."
+                        showIdle()
                     }
                 }
             })
@@ -55,6 +52,25 @@ class SplashActivity: DaggerAppCompatActivity() {
             }
         }
     }
+    private fun showIdle() {
+        text_loading.text = "Idle..."
+    }
+
+    private fun showSuccess() {
+        text_loading.text = "Success!"
+        startActivity(HomeActivity.create(this@SplashActivity))
+    }
+
+    private fun showError(status: Status.ERROR) {
+        text_loading.text = status.reason
+        text_retry.visibility = View.VISIBLE
+    }
+
+    private fun showLoading() {
+        text_loading.text = "Loading data..."
+        progress_bar.visibility = View.VISIBLE
+    }
+
     private fun setupToolbar() {
         supportActionBar?.setDisplayShowTitleEnabled(false)
     }

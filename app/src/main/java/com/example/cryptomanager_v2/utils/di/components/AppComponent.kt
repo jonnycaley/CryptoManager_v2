@@ -6,6 +6,7 @@ import com.example.cryptomanager_v2.utils.di.modules.AppAssistedModule
 import com.example.cryptomanager_v2.utils.di.modules.AppModule
 import com.example.cryptomanager_v2.utils.di.modules.DatabaseModule
 import com.example.cryptomanager_v2.utils.di.modules.NetworkModule
+import com.example.cryptomanager_v2.utils.di.modules.ViewModelModule
 import dagger.BindsInstance
 import dagger.Component
 import dagger.android.AndroidInjectionModule
@@ -21,7 +22,8 @@ import javax.inject.Singleton
         ActivityBuilder::class,
         DatabaseModule::class,
         AppModule::class,
-        AppAssistedModule::class
+        AppAssistedModule::class,
+        ViewModelModule::class
     ]
 )
 interface AppComponent: AndroidInjector<App> {

@@ -14,14 +14,15 @@ import com.example.cryptomanager_v2.data.model.cryptocompare.exchanges.Exchange
 import com.example.cryptomanager_v2.data.network.CryptoCompareApi
 import com.example.cryptomanager_v2.utils.Resource
 import com.example.cryptomanager_v2.utils.Status
-import com.example.cryptomanager_v2.utils.di.AppSchedulers
+import com.example.cryptomanager_v2.utils.AppSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.Observables
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.subjects.BehaviorSubject
+import javax.inject.Inject
 
 @SuppressLint("CheckResult")
-class SplashViewModel(
+class SplashViewModel @Inject constructor(
     private val exchangeRatesApi: ExchangeRatesApi,
     private val schedulers: AppSchedulers,
     private val exchangesDao: DBExchangesDao,
@@ -51,18 +52,20 @@ class SplashViewModel(
 
             val arrayStates = arrayOf(exchangeRates, cryptos, exchanges)
 
-            arrayStates
-                .filterIsInstance<Status.LOADING>()
-                .map{ Status.LOADING }
+            //If any are loading: show Loading
+            if(arrayStates.any { it.status is Status.LOADING })
+                return@combineLatest Status.LOADING
 
-            arrayStates
-                .filterIsInstance<Status.ERROR>()
-                .map{ Status.ERROR(it.reason) }
+            //If any are error: show Error
+            if(arrayStates.any { it.status is Status.ERROR })
+                return@combineLatest arrayStates.filterIsInstance<Status.ERROR>().first()
 
-            if(arrayStates.filterIsInstance<Status.SUCCESS>().size == arrayStates.size)
-                Status.SUCCESS
+            //If all are success: show Success
+            if(arrayStates.all { it.status is Status.SUCCESS })
+                return@combineLatest Status.SUCCESS
 
-            Status.IDLE
+            //Else show Idle
+            return@combineLatest Status.IDLE
         }
             .subscribe {
                 _status.value = it
@@ -88,9 +91,9 @@ class SplashViewModel(
             }
             .addTo(compositeDisposable)
 
-        checkExchangesDB()
         checkFiatsDB()
         checkCryptosDB()
+        checkExchangesDB()
     }
 
     private fun checkExchangesDB() {
@@ -192,6 +195,7 @@ class SplashViewModel(
     }
 
     fun retry() {
+
         if(fiatsSubject.value?.status is Status.ERROR)
             getFiats()
         if(exchangesSubject.value?.status is Status.ERROR)
