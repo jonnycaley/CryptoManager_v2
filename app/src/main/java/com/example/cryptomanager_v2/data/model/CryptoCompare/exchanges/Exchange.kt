@@ -1,8 +1,7 @@
 package com.example.cryptomanager_v2.data.model.cryptocompare.exchanges
 
-import com.example.cryptomanager_v2.data.db.exchanges.Cryptos
+import com.example.cryptomanager_v2.data.db.exchanges.cryptos.DBExchangeCrypto
 import com.example.cryptomanager_v2.data.db.exchanges.DBExchange
-import com.google.gson.Gson
 import org.json.JSONException
 import org.json.JSONTokener
 import org.json.JSONObject
@@ -31,7 +30,11 @@ class Exchange {
 
                             cryptoAndConversion.add(Pair(baseCrypto, conversionCryptosString))
                         }
-                        add(DBExchange(exchange, Cryptos(cryptoAndConversion)))
+                        add(DBExchange(exchange,
+                            DBExchangeCrypto(
+                                cryptoAndConversion
+                            )
+                        ))
                     }
 
                 } catch (e: JSONException) {
