@@ -10,7 +10,7 @@ class FakeDBCryptosDao @Inject constructor(): DBCryptosDao {
 
     val getAllResponses: ArrayList<Observable<List<DBCrypto>>> = arrayListOf()
     override fun getAll(): Observable<List<DBCrypto>> {
-        return getAllResponses.removeAt(0)
+        return getAllResponses.first()
     }
 
     val insertAllResponses: ArrayList<Completable> = arrayListOf()

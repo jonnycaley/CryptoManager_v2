@@ -10,11 +10,11 @@ class FakeDBFiatsDao @Inject constructor(): DBFiatsDao {
 
     val getAllResponses: ArrayList<Observable<List<DBFiat>>> = arrayListOf()
     override fun getAll(): Observable<List<DBFiat>> {
-        return getAllResponses.removeAt(0)
+        return getAllResponses.first()
     }
 
     val insertAllResponses: ArrayList<Completable> = arrayListOf()
     override fun insertAll(fiats: List<DBFiat>): Completable {
-        return insertAllResponses.removeAt(0)
+        return insertAllResponses.first()
     }
 }

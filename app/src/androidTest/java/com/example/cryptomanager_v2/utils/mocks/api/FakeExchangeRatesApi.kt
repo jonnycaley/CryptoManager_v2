@@ -1,6 +1,6 @@
 package com.example.cryptomanager_v2.utils.mocks.api
 
-import com.example.cryptomanager_v2.data.network.ExchangeRatesApi
+import com.example.cryptomanager_v2.data.network.exchangerates.ExchangeRatesApi
 import io.reactivex.Observable
 import javax.inject.Inject
 
