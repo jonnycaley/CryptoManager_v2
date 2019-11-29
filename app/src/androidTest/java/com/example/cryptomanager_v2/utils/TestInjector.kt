@@ -6,16 +6,14 @@ import com.example.cryptomanager_v2.utils.di.components.TestAppComponent
 
 class TestInjector {
 
-    private val instrumentation = InstrumentationRegistry.getInstrumentation()
-    private val app = instrumentation.targetContext.applicationContext as TestApp
-
     fun initComponent(): TestAppComponent {
         return DaggerTestAppComponent
-            .builder()
-            .build()
+            .create()
     }
 
     fun inject(component: TestAppComponent) {
+        val instrumentation = InstrumentationRegistry.getInstrumentation()
+        val app = instrumentation.targetContext.applicationContext as TestApp
         component.inject(app)
     }
 }
