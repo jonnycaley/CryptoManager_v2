@@ -1,4 +1,4 @@
-package com.example.cryptomanager_v2.data.network
+package com.example.cryptomanager_v2.data.network.cryptocompare
 
 import io.reactivex.Observable
 import retrofit2.http.GET

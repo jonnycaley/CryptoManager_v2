@@ -4,14 +4,14 @@ import android.annotation.SuppressLint
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.cryptomanager_v2.data.network.ExchangeRatesApi
+import com.example.cryptomanager_v2.data.network.exchangerates.ExchangeRatesApi
 import com.example.cryptomanager_v2.data.db.cryptos.DBCryptosDao
 import com.example.cryptomanager_v2.data.db.exchanges.DBExchangesDao
 import com.example.cryptomanager_v2.data.db.fiats.DBFiatsDao
 import com.example.cryptomanager_v2.data.model.cryptocompare.crytpo.Crypto
 import com.example.cryptomanager_v2.data.model.ExchangeRates.ExchangeRatesOld
 import com.example.cryptomanager_v2.data.model.cryptocompare.exchanges.Exchange
-import com.example.cryptomanager_v2.data.network.CryptoCompareApi
+import com.example.cryptomanager_v2.data.network.cryptocompare.CryptoCompareApi
 import com.example.cryptomanager_v2.utils.Resource
 import com.example.cryptomanager_v2.utils.Status
 import com.example.cryptomanager_v2.utils.AppSchedulers

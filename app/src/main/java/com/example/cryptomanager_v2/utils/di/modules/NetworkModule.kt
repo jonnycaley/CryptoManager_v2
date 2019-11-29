@@ -1,7 +1,7 @@
 package com.example.cryptomanager_v2.utils.di.modules
 
-import com.example.cryptomanager_v2.data.network.CryptoCompareApi
-import com.example.cryptomanager_v2.data.network.ExchangeRatesApi
+import com.example.cryptomanager_v2.data.network.cryptocompare.CryptoCompareApi
+import com.example.cryptomanager_v2.data.network.exchangerates.ExchangeRatesApi
 import com.example.cryptomanager_v2.utils.Constants
 import com.example.cryptomanager_v2.utils.NoInternetConnectionInterceptor
 import com.example.cryptomanager_v2.utils.AppSchedulers

@@ -5,7 +5,7 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.example.cryptomanager_v2.data.db.cryptos.DBCrypto
 import com.example.cryptomanager_v2.data.db.cryptos.DBCryptosDao
-import com.example.cryptomanager_v2.data.db.exchanges.CryptosTypeConverter
+import com.example.cryptomanager_v2.data.db.exchanges.cryptos.CryptosTypeConverter
 import com.example.cryptomanager_v2.data.db.exchanges.DBExchange
 import com.example.cryptomanager_v2.data.db.exchanges.DBExchangesDao
 import com.example.cryptomanager_v2.data.db.fiats.DBFiat

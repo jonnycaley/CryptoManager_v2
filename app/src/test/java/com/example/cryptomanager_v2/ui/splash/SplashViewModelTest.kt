@@ -3,14 +3,14 @@ package com.example.cryptomanager_v2.ui.splash
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.example.cryptomanager_v2.data.db.cryptos.DBCrypto
 import com.example.cryptomanager_v2.data.db.cryptos.DBCryptosDao
-import com.example.cryptomanager_v2.data.db.exchanges.Cryptos
+import com.example.cryptomanager_v2.data.db.exchanges.cryptos.DBExchangeCrypto
 import com.example.cryptomanager_v2.data.db.exchanges.DBExchange
 import com.example.cryptomanager_v2.data.db.exchanges.DBExchangesDao
 import com.example.cryptomanager_v2.data.db.fiats.DBFiat
 import com.example.cryptomanager_v2.data.db.fiats.DBFiatsDao
 import com.example.cryptomanager_v2.data.model.cryptocompare.exchanges.Exchange
-import com.example.cryptomanager_v2.data.network.CryptoCompareApi
-import com.example.cryptomanager_v2.data.network.ExchangeRatesApi
+import com.example.cryptomanager_v2.data.network.cryptocompare.CryptoCompareApi
+import com.example.cryptomanager_v2.data.network.exchangerates.ExchangeRatesApi
 import com.example.cryptomanager_v2.utils.NoConnectivityException
 import com.example.cryptomanager_v2.utils.Status
 import com.example.cryptomanager_v2.utils.TestAppSchedulers
@@ -198,11 +198,12 @@ class SplashViewModelTest {
 
     private fun createEmptyExchangesDB() = listOf<DBExchange>()
 
-    private fun createExchangesDB() = listOf(DBExchange(exchangeName = "ABCC", cryptos = Cryptos(
+    private fun createExchangesDB() = listOf(DBExchange(exchangeName = "ABCC", cryptos = DBExchangeCrypto(
         cryptos = listOf(
-            Pair(first ="CND", second = listOf("BTC", "ETH"))
+            Pair(first = "CND", second = listOf("BTC", "ETH"))
         )
-    )))
+    )
+    ))
 
     private fun createFiatsDB() = listOf(DBFiat(name = "CAD", rate = 1.3258222788))
 
