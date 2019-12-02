@@ -5,6 +5,10 @@ import androidx.test.espresso.Espresso.*
 import androidx.test.espresso.assertion.ViewAssertions.*
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.example.cryptomanager_v2.R
+import androidx.test.espresso.intent.Intents.*
+import androidx.test.espresso.intent.matcher.IntentMatchers
+import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
+import com.example.cryptomanager_v2.ui.home.HomeActivity
 
 class SplashActivityRobot {
 
@@ -19,6 +23,7 @@ class SplashActivityRobot {
     }
 
     fun checkHasNavigatedToHomeActivity(): SplashActivityRobot {
+        intended(hasComponent(HomeActivity::class.java.name))
         return this
     }
 

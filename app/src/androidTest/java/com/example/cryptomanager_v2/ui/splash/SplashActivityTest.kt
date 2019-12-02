@@ -1,6 +1,7 @@
 package com.example.cryptomanager_v2.ui.splash
 
 import androidx.test.core.app.ActivityScenario
+import androidx.test.espresso.intent.Intents
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.cryptomanager_v2.data.network.cryptocompare.CryptoCompareApiBuilder
 import com.example.cryptomanager_v2.data.network.exchangerates.ExchangeRatesApiBuilder
@@ -13,6 +14,7 @@ import com.example.cryptomanager_v2.utils.mocks.db.FakeDBExchangesDao
 import com.example.cryptomanager_v2.utils.mocks.db.FakeDBFiatsDao
 import io.reactivex.Completable
 import io.reactivex.Observable
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -34,6 +36,7 @@ class SplashActivityTest {
 
     @Before
     fun setUp() {
+        Intents.init()
         MockitoAnnotations.initMocks(this)
         testComponent = TestInjector().initComponent()
         testComponent.apply {
@@ -46,8 +49,13 @@ class SplashActivityTest {
         }
     }
 
+    @After
+    fun tearDown() {
+        Intents.release()
+    }
+
     @Test
-    fun whenStart_givenDataIsEmpty_thenLoadDataAndSuccessShown() {
+    fun whenStart_givenDataIsEmpty_thenLoadDataAndNavigateToHomeActivity() {
         fakeDBExchangesDao.getAllResponses.add(Observable.just(listOf()))
         fakeDBFiatsDao.getAllResponses.add(Observable.just(listOf()))
         fakeDBCryptosDao.getAllResponses.add(Observable.just(listOf()))
@@ -63,14 +71,13 @@ class SplashActivityTest {
         launchActivity()
 
         SplashActivityRobot()
-            .checkLoadingTextIsSuccess()
             .checkHasNavigatedToHomeActivity()
     }
 
-    @Test
-    fun whenStart_givenError_thenRetryShownAndWorks() {
-
-    }
+//    @Test
+//    fun whenStart_givenError_thenRetryShownAndWorks() {
+//
+//    }
 
     private fun launchActivity() {
         TestInjector().inject(testComponent)
