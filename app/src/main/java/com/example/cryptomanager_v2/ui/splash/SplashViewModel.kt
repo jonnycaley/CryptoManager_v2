@@ -57,8 +57,10 @@ class SplashViewModel @Inject constructor(
                 return@combineLatest Status.LOADING
 
             //If any are error: show Error
-            if(arrayStates.any { it.status is Status.ERROR })
-                return@combineLatest arrayStates.filterIsInstance<Status.ERROR>().first()
+            if(arrayStates.any { it.status is Status.ERROR }) {
+                val reason = (arrayStates.first { it.status is Status.ERROR }.status as Status.ERROR).reason
+                return@combineLatest Status.ERROR(reason)
+            }
 
             //If all are success: show Success
             if(arrayStates.all { it.status is Status.SUCCESS })
@@ -128,8 +130,7 @@ class SplashViewModel @Inject constructor(
             .doOnSubscribe {
                 exchangesSubject.onNext(Resource.loading())
             }
-            .subscribe ({ exchanges ->
-            },{
+            .subscribe ({},{
                 exchangesSubject.onNext(Resource.error(it.localizedMessage))
             },{
                 exchangesSubject.onNext(Resource.success())
@@ -221,7 +222,7 @@ class SplashViewModel @Inject constructor(
             }
             .subscribe ({
             },{
-                fiatsSubject.onNext(Resource.error(it.localizedMessage))
+                fiatsSubject.onNext(Resource.error(it.message ?: "An error occurred, please try again later."))
             }, {
                 fiatsSubject.onNext(Resource.success())
             })
