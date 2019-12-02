@@ -12,7 +12,7 @@ import com.example.cryptomanager_v2.ui.home.HomeActivity
 
 class SplashActivityRobot {
 
-    fun checkLoadingTextIsIdle(): SplashActivityRobot {
+    fun checkLoadingTextIsError(): SplashActivityRobot {
         checkLoadingText("Idle...")
         return this
     }
@@ -32,7 +32,7 @@ class SplashActivityRobot {
         return this
     }
 
-    private fun checkLoadingText(text: String): SplashActivityRobot {
+    fun checkLoadingText(text: String): SplashActivityRobot {
         onView(withId(R.id.text_loading))
             .check(matches(withText(text)))
         return this
