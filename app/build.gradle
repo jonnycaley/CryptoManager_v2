@@ -175,11 +175,12 @@ dependencies {
     compileOnly 'com.squareup.inject:assisted-inject-annotations-dagger2:0.5.1'
     kapt 'com.squareup.inject:assisted-inject-processor-dagger2:0.5.1'
 
-    androidTestImplementation 'androidx.test.espresso:espresso-intents:3.2.0'
     testImplementation 'androidx.test.espresso:espresso-intents:3.2.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-intents:3.2.0'
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test:rules:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+//    androidTestImplementation 'androidx.test.ext:junit:1.2.0'
 }
 //android.applicationVariants.all {
 //    def aptOutputDir = new File(buildDir, "generated/source/kapt/${it.unitTestVariant.dirName}")
