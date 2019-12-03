@@ -12,6 +12,7 @@ import com.example.cryptomanager_v2.R
 
 class PortfolioFragment : Fragment() {
     private lateinit var portfolioViewModel: PortfolioViewModel
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
