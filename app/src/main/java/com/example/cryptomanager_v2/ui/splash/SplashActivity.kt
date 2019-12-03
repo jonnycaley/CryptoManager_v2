@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.example.cryptomanager_v2.R
 import com.example.cryptomanager_v2.ui.home.HomeActivity
 import com.example.cryptomanager_v2.utils.Status
+import com.example.cryptomanager_v2.utils.exhaustive
 import dagger.android.support.DaggerAppCompatActivity
 import kotlinx.android.synthetic.main.activity_splash.*
 import javax.inject.Inject
@@ -34,40 +35,34 @@ class SplashActivity: DaggerAppCompatActivity() {
                 progress_bar.visibility = View.GONE
                 when(status) {
                     is Status.LOADING -> {
-                        showLoading()
+                        onLoading()
                     }
                     is Status.ERROR -> {
-                        showError(status)
+                        onError(status)
                     }
                     is Status.SUCCESS -> {
-                        showSuccess()
+                        onSuccess()
                     }
-                    is Status.IDLE -> {
-                        showIdle()
-                    }
-                }
+                    is Status.IDLE -> { }
+                }.exhaustive
             })
             text_retry.setOnClickListener {
                 viewModel.retry()
             }
         }
     }
-    private fun showIdle() {
-        text_loading.text = "Idle..."
-    }
 
-    private fun showSuccess() {
-        text_loading.text = "Success!"
+    private fun onSuccess() {
         startActivity(HomeActivity.create(this@SplashActivity))
     }
 
-    private fun showError(status: Status.ERROR) {
+    private fun onError(status: Status.ERROR) {
+        text_loading.visibility = View.VISIBLE
         text_loading.text = status.reason
         text_retry.visibility = View.VISIBLE
     }
 
-    private fun showLoading() {
-        text_loading.text = "Loading data..."
+    private fun onLoading() {
         progress_bar.visibility = View.VISIBLE
     }
 
