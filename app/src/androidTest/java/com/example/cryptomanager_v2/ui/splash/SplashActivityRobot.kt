@@ -2,6 +2,7 @@ package com.example.cryptomanager_v2.ui.splash
 
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.*
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.*
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.example.cryptomanager_v2.R
@@ -9,6 +10,7 @@ import androidx.test.espresso.intent.Intents.*
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import com.example.cryptomanager_v2.ui.home.HomeActivity
+import kotlinx.android.synthetic.main.activity_splash.*
 
 class SplashActivityRobot {
 
@@ -29,6 +31,12 @@ class SplashActivityRobot {
 
     fun checkLoadingTextIsLoading(): SplashActivityRobot {
         checkLoadingText("Loading...")
+        return this
+    }
+
+    fun clickRetry(): SplashActivityRobot {
+        onView(withId(R.id.text_retry))
+            .perform(click())
         return this
     }
 

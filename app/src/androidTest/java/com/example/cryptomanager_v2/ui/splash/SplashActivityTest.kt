@@ -19,7 +19,6 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.MockitoAnnotations
-import java.lang.RuntimeException
 
 @RunWith(AndroidJUnit4::class)
 class SplashActivityTest {
@@ -56,11 +55,15 @@ class SplashActivityTest {
     }
 
     @Test
-    fun whenStart_givenDataIsEmpty_thenLoadDataAndNavigateToHomeActivity() {
+    fun givenApiError_whenRetry_thenNavigateToHomeActivity() {
+
+        val networkError = Exception("A network error occurred!")
+
         fakeDBExchangesDao.getAllResponses.add(Observable.just(listOf()))
         fakeDBFiatsDao.getAllResponses.add(Observable.just(listOf()))
         fakeDBCryptosDao.getAllResponses.add(Observable.just(listOf()))
 
+        fakeExchangeRatesApi.getFiatsResponses.add(Observable.error(networkError))
         fakeExchangeRatesApi.getFiatsResponses.add(Observable.just(ExchangeRatesApiBuilder.build()))
         fakeCryptoCompareApi.getAllCryptoResponses.add(Observable.just(CryptoCompareApiBuilder.buildCryptoResponse()))
         fakeCryptoCompareApi.getAllExchangesResponses.add(Observable.just(CryptoCompareApiBuilder.buildExchangeResponse()))
@@ -72,29 +75,9 @@ class SplashActivityTest {
         launchActivity()
 
         SplashActivityRobot()
-            .checkHasNavigatedToHomeActivity()
-    }
-
-    @Test
-    fun givenDataEmpty_whenApiError_thenRetryShownAndWorks() {
-
-        val networkError = Exception("A network error occurred!")
-
-        fakeDBExchangesDao.getAllResponses.add(Observable.just(listOf()))
-        fakeDBFiatsDao.getAllResponses.add(Observable.just(listOf()))
-        fakeDBCryptosDao.getAllResponses.add(Observable.just(listOf()))
-
-        fakeExchangeRatesApi.getFiatsResponses.add(Observable.error(networkError))
-        fakeCryptoCompareApi.getAllCryptoResponses.add(Observable.just(CryptoCompareApiBuilder.buildCryptoResponse()))
-        fakeCryptoCompareApi.getAllExchangesResponses.add(Observable.just(CryptoCompareApiBuilder.buildExchangeResponse()))
-
-        fakeDBExchangesDao.insertAllResponses.add(Completable.complete())
-        fakeDBCryptosDao.insertAllResponses.add(Completable.complete())
-
-        launchActivity()
-
-        SplashActivityRobot()
             .checkLoadingText(networkError.localizedMessage)
+            .clickRetry()
+            .checkHasNavigatedToHomeActivity()
     }
 
     private fun launchActivity() {
