@@ -18,8 +18,7 @@ class PortfolioFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        portfolioViewModel =
-            ViewModelProviders.of(this).get(PortfolioViewModel::class.java)
+        portfolioViewModel = ViewModelProviders.of(this).get(PortfolioViewModel::class.java)
         val root = inflater.inflate(R.layout.fragment_portfolio, container, false)
         val textView: TextView = root.findViewById(R.id.text_portfolio)
         portfolioViewModel.text.observe(this, Observer {
