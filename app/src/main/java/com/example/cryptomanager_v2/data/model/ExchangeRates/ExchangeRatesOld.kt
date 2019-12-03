@@ -1,7 +1,6 @@
 package com.example.cryptomanager_v2.data.model.ExchangeRates
 
 import com.example.cryptomanager_v2.data.db.fiats.DBFiat
-import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
 import org.json.JSONException
 import org.json.JSONObject
@@ -30,7 +29,8 @@ class ExchangeRatesOld {
                     fiatsArray.add(
                         DBFiat(
                             name = key,
-                            rate = value
+                            rate = value,
+                            isBaseFiat = key == "GBP" // On first loading, the base fiat is set to GBP
                         )
                     )
                 }
