@@ -9,6 +9,6 @@ object DBFiatsBuilder {
     }
 
     fun buildDBFiat(): DBFiat {
-        return DBFiat(name = "USD", rate = 1.0)
+        return DBFiat(name = "USD", rate = 1.0, isBaseFiat = true)
     }
 }

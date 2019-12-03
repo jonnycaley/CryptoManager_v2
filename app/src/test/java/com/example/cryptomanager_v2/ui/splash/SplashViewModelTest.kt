@@ -3,18 +3,18 @@ package com.example.cryptomanager_v2.ui.splash
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.example.cryptomanager_v2.data.db.cryptos.DBCrypto
 import com.example.cryptomanager_v2.data.db.cryptos.DBCryptosDao
-import com.example.cryptomanager_v2.data.db.exchanges.cryptos.DBExchangeCrypto
 import com.example.cryptomanager_v2.data.db.exchanges.DBExchange
 import com.example.cryptomanager_v2.data.db.exchanges.DBExchangesDao
+import com.example.cryptomanager_v2.data.db.exchanges.cryptos.DBExchangeCrypto
 import com.example.cryptomanager_v2.data.db.fiats.DBFiat
 import com.example.cryptomanager_v2.data.db.fiats.DBFiatsDao
 import com.example.cryptomanager_v2.data.model.cryptocompare.exchanges.Exchange
 import com.example.cryptomanager_v2.data.network.cryptocompare.CryptoCompareApi
 import com.example.cryptomanager_v2.data.network.exchangerates.ExchangeRatesApi
+import com.example.cryptomanager_v2.utils.AppSchedulers
 import com.example.cryptomanager_v2.utils.NoConnectivityException
 import com.example.cryptomanager_v2.utils.Status
 import com.example.cryptomanager_v2.utils.TestAppSchedulers
-import com.example.cryptomanager_v2.utils.AppSchedulers
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
 import io.reactivex.Completable
@@ -205,7 +205,7 @@ class SplashViewModelTest {
     )
     ))
 
-    private fun createFiatsDB() = listOf(DBFiat(name = "CAD", rate = 1.3258222788))
+    private fun createFiatsDB() = listOf(DBFiat(name = "GBP", rate = 1.3258222788, isBaseFiat = true))
 
     private fun createViewModel() : SplashViewModel {
         return SplashViewModel(

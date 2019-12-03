@@ -8,7 +8,7 @@ object DBCryptoBuilder {
         )
     }
 
-    fun buildDBCrypto(): DBCrypto {
+    private fun buildDBCrypto(): DBCrypto {
         return DBCrypto(
             id = "BTC",
             name = "Bitcoin",

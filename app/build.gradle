@@ -87,6 +87,7 @@ dependencies {
     testImplementation 'org.mockito:mockito-inline:3.1.0'
 
     testImplementation 'org.assertj:assertj-core:3.14.0'
+    androidTestImplementation 'org.assertj:assertj-core:3.14.0'
 
     testImplementation "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
 
