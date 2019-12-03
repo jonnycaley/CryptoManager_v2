@@ -1,36 +1,19 @@
 package com.example.cryptomanager_v2.ui.splash
 
-import androidx.test.espresso.Espresso
-import androidx.test.espresso.Espresso.*
+import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.assertion.ViewAssertions.*
-import androidx.test.espresso.matcher.ViewMatchers.*
-import com.example.cryptomanager_v2.R
-import androidx.test.espresso.intent.Intents.*
-import androidx.test.espresso.intent.matcher.IntentMatchers
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
+import com.example.cryptomanager_v2.R
 import com.example.cryptomanager_v2.ui.home.HomeActivity
-import kotlinx.android.synthetic.main.activity_splash.*
 
 class SplashActivityRobot {
 
-    fun checkLoadingTextIsError(): SplashActivityRobot {
-        checkLoadingText("Idle...")
-        return this
-    }
-
-    fun checkLoadingTextIsSuccess(): SplashActivityRobot {
-        checkLoadingText("Success!")
-        return this
-    }
-
     fun checkHasNavigatedToHomeActivity(): SplashActivityRobot {
         intended(hasComponent(HomeActivity::class.java.name))
-        return this
-    }
-
-    fun checkLoadingTextIsLoading(): SplashActivityRobot {
-        checkLoadingText("Loading...")
         return this
     }
 
