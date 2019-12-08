@@ -13,7 +13,6 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.io.IOException
-import java.util.concurrent.TimeUnit
 
 @RunWith(AndroidJUnit4::class)
 class DatabaseTest {
@@ -46,9 +45,8 @@ class DatabaseTest {
         val cryptos = DBCryptoBuilder.buildDB()
         dbCryptosDao.insertAll(cryptos).test()
 
-        dbCryptosDao.getAll()
-            .test()
-            .awaitDone(100, TimeUnit.MILLISECONDS)
+        dbCryptosDao.getAll().test()
+            .awaitCount(1)
             .assertValue {
                 it[0] == cryptos[0]
             }
