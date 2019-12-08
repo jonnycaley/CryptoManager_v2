@@ -3,6 +3,9 @@ package com.example.cryptomanager_v2.ui.splash
 import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.intent.Intents
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.example.cryptomanager_v2.data.db.cryptos.DBCryptoBuilder
+import com.example.cryptomanager_v2.data.db.exchanges.DBExchangeBuilder
+import com.example.cryptomanager_v2.data.db.fiats.DBFiatsBuilder
 import com.example.cryptomanager_v2.data.network.cryptocompare.CryptoCompareApiBuilder
 import com.example.cryptomanager_v2.data.network.exchangerates.ExchangeRatesApiBuilder
 import com.example.cryptomanager_v2.utils.TestInjector
@@ -52,6 +55,7 @@ class SplashActivityTest {
     @After
     fun tearDown() {
         Intents.release()
+        scenario.close()
     }
 
     @Test
@@ -77,6 +81,19 @@ class SplashActivityTest {
         SplashActivityRobot()
             .checkLoadingText(networkError.localizedMessage)
             .clickRetry()
+            .checkHasNavigatedToHomeActivity()
+    }
+
+    @Test
+    fun givenDataIsPresent_ThenNavigateToHomeActivity() {
+
+        fakeDBExchangesDao.getAllResponses.add(Observable.just(DBExchangeBuilder.buildDB()))
+        fakeDBFiatsDao.getAllResponses.add(DBFiatsBuilder.buildDB())
+        fakeDBCryptosDao.getAllResponses.add(Observable.just(DBCryptoBuilder.buildDB()))
+
+        launchActivity()
+
+        SplashActivityRobot()
             .checkHasNavigatedToHomeActivity()
     }
 
