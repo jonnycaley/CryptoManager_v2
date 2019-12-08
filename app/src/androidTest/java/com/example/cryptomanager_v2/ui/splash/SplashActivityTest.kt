@@ -5,8 +5,8 @@ import androidx.test.espresso.intent.Intents
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.cryptomanager_v2.data.network.cryptocompare.CryptoCompareApiBuilder
 import com.example.cryptomanager_v2.data.network.exchangerates.ExchangeRatesApiBuilder
-import com.example.cryptomanager_v2.utils.di.components.TestAppComponent
 import com.example.cryptomanager_v2.utils.TestInjector
+import com.example.cryptomanager_v2.utils.di.components.TestAppComponent
 import com.example.cryptomanager_v2.utils.mocks.api.FakeCryptoCompareApi
 import com.example.cryptomanager_v2.utils.mocks.api.FakeExchangeRatesApi
 import com.example.cryptomanager_v2.utils.mocks.db.FakeDBCryptosDao
@@ -60,7 +60,7 @@ class SplashActivityTest {
         val networkError = Exception("A network error occurred!")
 
         fakeDBExchangesDao.getAllResponses.add(Observable.just(listOf()))
-        fakeDBFiatsDao.getAllResponses.add(Observable.just(listOf()))
+        fakeDBFiatsDao.getAllResponses.add(emptyList())
         fakeDBCryptosDao.getAllResponses.add(Observable.just(listOf()))
 
         fakeExchangeRatesApi.getFiatsResponses.add(Observable.error(networkError))
