@@ -12,11 +12,7 @@ import com.example.cryptomanager_v2.R
 
 class MarketsFragment : Fragment() {
     private lateinit var marketsViewModel: MarketsViewModel
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         marketsViewModel =
             ViewModelProviders.of(this).get(MarketsViewModel::class.java)
         val root = inflater.inflate(R.layout.fragment_markets, container, false)
