@@ -1,6 +1,7 @@
 package com.example.cryptomanager_v2.ui.splash
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.MutableLiveData
 import com.example.cryptomanager_v2.data.db.cryptos.DBCrypto
 import com.example.cryptomanager_v2.data.db.cryptos.DBCryptosDao
 import com.example.cryptomanager_v2.data.db.exchanges.DBExchange
@@ -50,7 +51,7 @@ class SplashViewModelTest {
         whenever(exchangesDao.getAll()).thenReturn(Observable.just(exchangesDB))
 
         val fiatsDB = createFiatsDB()
-        whenever(fiatsDao.getAll()).thenReturn(Observable.just(fiatsDB))
+        whenever(fiatsDao.getAll()).thenReturn(MutableLiveData<List<DBFiat>>(fiatsDB))
 
         val cryptosDB = createCryptosDB()
         whenever(cryptosDao.getAll()).thenReturn(Observable.just(cryptosDB))
@@ -70,7 +71,7 @@ class SplashViewModelTest {
         whenever(exchangesDao.insertAll(createExchangesDB())).thenReturn(Completable.complete())
 
         val emptyFiatDB = createEmptyFiatsDB()
-        whenever(fiatsDao.getAll()).thenReturn(Observable.just(emptyFiatDB))
+        whenever(fiatsDao.getAll()).thenReturn(MutableLiveData<List<DBFiat>>(emptyFiatDB))
         val fiats = createFiats()
         whenever(exchangeRatesApi.getFiats()).thenReturn(Observable.just(fiats))
         whenever(fiatsDao.insertAll(createFiatsDB())).thenReturn(Completable.complete())
@@ -95,7 +96,7 @@ class SplashViewModelTest {
         whenever(cryptoCompareApi.getAllExchanges()).thenReturn(Observable.error(error))
 
         val emptyFiatDB = createEmptyFiatsDB()
-        whenever(fiatsDao.getAll()).thenReturn(Observable.just(emptyFiatDB))
+        whenever(fiatsDao.getAll()).thenReturn(MutableLiveData<List<DBFiat>>(emptyFiatDB))
         val fiats = createFiats()
         whenever(exchangeRatesApi.getFiats()).thenReturn(Observable.just(fiats))
         whenever(fiatsDao.insertAll(createFiatsDB())).thenReturn(Completable.complete())
@@ -122,7 +123,7 @@ class SplashViewModelTest {
         whenever(exchangesDao.insertAll(dbExchanges)).thenReturn(Completable.complete())
 
         val emptyFiatDB = createEmptyFiatsDB()
-        whenever(fiatsDao.getAll()).thenReturn(Observable.just(emptyFiatDB))
+        whenever(fiatsDao.getAll()).thenReturn(MutableLiveData<List<DBFiat>>(emptyFiatDB))
         val error = NoConnectivityException()
         whenever(exchangeRatesApi.getFiats()).thenReturn(Observable.error(error))
 
@@ -148,7 +149,7 @@ class SplashViewModelTest {
         whenever(exchangesDao.insertAll(dbExchanges)).thenReturn(Completable.complete())
 
         val emptyFiatDB = createEmptyFiatsDB()
-        whenever(fiatsDao.getAll()).thenReturn(Observable.just(emptyFiatDB))
+        whenever(fiatsDao.getAll()).thenReturn(MutableLiveData<List<DBFiat>>(emptyFiatDB))
         val fiats = createFiats()
         whenever(exchangeRatesApi.getFiats()).thenReturn(Observable.just(fiats))
         whenever(fiatsDao.insertAll(createFiatsDB())).thenReturn(Completable.complete())
