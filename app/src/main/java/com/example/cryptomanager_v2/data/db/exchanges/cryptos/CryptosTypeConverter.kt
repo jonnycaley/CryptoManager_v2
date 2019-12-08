@@ -10,7 +10,7 @@ class CryptosTypeConverter {
     @TypeConverter
     fun storedStringToCryptos(string: String?) : DBExchangeCrypto? {
         return if(string.isNullOrEmpty()) {
-            DBExchangeCrypto(arrayListOf())
+            DBExchangeCrypto(emptyList())
         } else {
             gson.fromJson(string, DBExchangeCrypto::class.java)
         }
