@@ -10,7 +10,7 @@ object DBExchangeBuilder {
         ))
     }
 
-    fun buildExchangeCrypto(): DBExchangeCrypto {
+    private fun buildExchangeCrypto(): DBExchangeCrypto {
         return DBExchangeCrypto(cryptos = buildCryptoList())
     }
 
