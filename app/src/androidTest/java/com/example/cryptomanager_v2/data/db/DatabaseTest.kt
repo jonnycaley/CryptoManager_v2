@@ -1,6 +1,7 @@
 package com.example.cryptomanager_v2.data.db
 
 import android.content.Context
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -8,10 +9,12 @@ import com.example.cryptomanager_v2.data.db.cryptos.DBCryptoBuilder
 import com.example.cryptomanager_v2.data.db.cryptos.DBCryptosDao
 import com.example.cryptomanager_v2.data.db.exchanges.DBExchangeBuilder
 import com.example.cryptomanager_v2.data.db.exchanges.DBExchangesDao
+import com.example.cryptomanager_v2.data.db.fiats.DBFiat
 import com.example.cryptomanager_v2.data.db.fiats.DBFiatsBuilder
 import com.example.cryptomanager_v2.data.db.fiats.DBFiatsDao
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.io.IOException
@@ -24,6 +27,11 @@ class DatabaseTest {
     private lateinit var dbCryptosDao: DBCryptosDao
     private lateinit var dbExchangesDao: DBExchangesDao
     private lateinit var dbFiatsDao: DBFiatsDao
+
+    private lateinit var fiatsObserver: List<DBFiat>
+
+    @get:Rule
+    val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     @Before
     fun before() {
@@ -48,7 +56,6 @@ class DatabaseTest {
         dbCryptosDao.insertAll(cryptos).test()
 
         dbCryptosDao.getAll().test()
-            .awaitCount(1)
             .assertValue {
                 it[0] == cryptos[0]
             }
@@ -60,7 +67,6 @@ class DatabaseTest {
         dbExchangesDao.insertAll(exchanges).test()
 
         dbExchangesDao.getAll().test()
-            .awaitCount(1)
             .assertValue {
                 it[0] == exchanges[0]
             }
@@ -71,10 +77,10 @@ class DatabaseTest {
         val fiats = DBFiatsBuilder.buildDB()
         dbFiatsDao.insertAll(fiats).test()
 
-        dbFiatsDao.getAll().test()
-            .awaitCount(1)
-            .assertValue {
-                it[0] == fiats[0]
-            }
+        dbFiatsDao.getAll()
+            .observeForever { fiatsObserver = it }
+
+        assert(fiatsObserver[0] == fiats[0])
+
     }
 }
