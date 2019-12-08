@@ -63,9 +63,9 @@ class SplashActivityTest {
 
         val networkError = Exception("A network error occurred!")
 
-        fakeDBExchangesDao.getAllResponses.add(Observable.just(listOf()))
+        fakeDBExchangesDao.getAllResponses.add(Observable.just(emptyList()))
         fakeDBFiatsDao.getAllResponses.add(emptyList())
-        fakeDBCryptosDao.getAllResponses.add(Observable.just(listOf()))
+        fakeDBCryptosDao.getAllResponses.add(Observable.just(emptyList()))
 
         fakeExchangeRatesApi.getFiatsResponses.add(Observable.error(networkError))
         fakeExchangeRatesApi.getFiatsResponses.add(Observable.just(ExchangeRatesApiBuilder.build()))
