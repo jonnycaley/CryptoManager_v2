@@ -6,6 +6,7 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.cryptomanager_v2.data.db.cryptos.DBCryptoBuilder
 import com.example.cryptomanager_v2.data.db.cryptos.DBCryptosDao
+import com.example.cryptomanager_v2.data.db.exchanges.DBExchangeBuilder
 import com.example.cryptomanager_v2.data.db.exchanges.DBExchangesDao
 import com.example.cryptomanager_v2.data.db.fiats.DBFiatsDao
 import org.junit.After
@@ -49,6 +50,18 @@ class DatabaseTest {
             .awaitCount(1)
             .assertValue {
                 it[0] == cryptos[0]
+            }
+    }
+
+    @Test
+    fun writeExchangesAndRead() {
+        val exchanges = DBExchangeBuilder.buildDB()
+        dbExchangesDao.insertAll(exchanges).test()
+
+        dbExchangesDao.getAll().test()
+            .awaitCount(1)
+            .assertValue {
+                it[0] == exchanges[0]
             }
     }
 }
