@@ -8,6 +8,7 @@ import com.example.cryptomanager_v2.data.db.cryptos.DBCryptoBuilder
 import com.example.cryptomanager_v2.data.db.cryptos.DBCryptosDao
 import com.example.cryptomanager_v2.data.db.exchanges.DBExchangeBuilder
 import com.example.cryptomanager_v2.data.db.exchanges.DBExchangesDao
+import com.example.cryptomanager_v2.data.db.fiats.DBFiatsBuilder
 import com.example.cryptomanager_v2.data.db.fiats.DBFiatsDao
 import org.junit.After
 import org.junit.Before
@@ -62,6 +63,18 @@ class DatabaseTest {
             .awaitCount(1)
             .assertValue {
                 it[0] == exchanges[0]
+            }
+    }
+
+    @Test
+    fun writeFiatsAndRead() {
+        val fiats = DBFiatsBuilder.buildDB()
+        dbFiatsDao.insertAll(fiats).test()
+
+        dbFiatsDao.getAll().test()
+            .awaitCount(1)
+            .assertValue {
+                it[0] == fiats[0]
             }
     }
 }
