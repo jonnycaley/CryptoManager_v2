@@ -13,11 +13,7 @@ import com.example.cryptomanager_v2.R
 class PortfolioFragment : Fragment() {
     private lateinit var portfolioViewModel: PortfolioViewModel
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         portfolioViewModel = ViewModelProviders.of(this).get(PortfolioViewModel::class.java)
         val root = inflater.inflate(R.layout.fragment_portfolio, container, false)
         val textView: TextView = root.findViewById(R.id.text_portfolio)
