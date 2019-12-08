@@ -4,17 +4,17 @@ import android.annotation.SuppressLint
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.cryptomanager_v2.data.network.exchangerates.ExchangeRatesApi
 import com.example.cryptomanager_v2.data.db.cryptos.DBCryptosDao
 import com.example.cryptomanager_v2.data.db.exchanges.DBExchangesDao
 import com.example.cryptomanager_v2.data.db.fiats.DBFiatsDao
-import com.example.cryptomanager_v2.data.model.cryptocompare.crytpo.Crypto
 import com.example.cryptomanager_v2.data.model.ExchangeRates.ExchangeRatesOld
+import com.example.cryptomanager_v2.data.model.cryptocompare.crytpo.Crypto
 import com.example.cryptomanager_v2.data.model.cryptocompare.exchanges.Exchange
 import com.example.cryptomanager_v2.data.network.cryptocompare.CryptoCompareApi
+import com.example.cryptomanager_v2.data.network.exchangerates.ExchangeRatesApi
+import com.example.cryptomanager_v2.utils.AppSchedulers
 import com.example.cryptomanager_v2.utils.Resource
 import com.example.cryptomanager_v2.utils.Status
-import com.example.cryptomanager_v2.utils.AppSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.Observables
 import io.reactivex.rxkotlin.addTo
@@ -182,26 +182,21 @@ class SplashViewModel @Inject constructor(
     private fun checkFiatsDB() {
 
         fiatsDao.getAll()
-            .subscribeOn(schedulers.io)
-            .observeOn(schedulers.mainThread)
-            .doOnSubscribe {
-                fiatsSubject.onNext(Resource.loading())
-            }
-            .subscribe {
-                if(it.isNotEmpty())
+            .observeForever {
+                if (it.isNotEmpty())
                     fiatsSubject.onNext(Resource.success())
                 else
                     getFiats()
-            }.addTo(compositeDisposable)
+            }
     }
 
     fun retry() {
 
-        if(fiatsSubject.value?.status is Status.ERROR)
+        if (fiatsSubject.value?.status is Status.ERROR)
             getFiats()
-        if(exchangesSubject.value?.status is Status.ERROR)
+        if (exchangesSubject.value?.status is Status.ERROR)
             getExchanges()
-        if(cryptosSubject.value?.status is Status.ERROR)
+        if (cryptosSubject.value?.status is Status.ERROR)
             getCryptos()
     }
 
@@ -228,6 +223,7 @@ class SplashViewModel @Inject constructor(
             })
             .addTo(compositeDisposable)
     }
+
     override fun onCleared() {
         super.onCleared()
         compositeDisposable.dispose()
