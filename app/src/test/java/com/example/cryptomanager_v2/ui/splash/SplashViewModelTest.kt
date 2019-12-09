@@ -16,6 +16,7 @@ import com.example.cryptomanager_v2.utils.AppSchedulers
 import com.example.cryptomanager_v2.utils.NoConnectivityException
 import com.example.cryptomanager_v2.utils.Status
 import com.example.cryptomanager_v2.utils.TestAppSchedulers
+import com.example.cryptomanager_v2.utils.observeOnce
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
 import io.reactivex.Completable
@@ -43,8 +44,6 @@ class SplashViewModelTest {
 
     private lateinit var viewModel: SplashViewModel
 
-    private var status: Status = Status.IDLE
-
     @Test
     fun givenDatabasesTablesContainData_whenInit_thenSuccess() {
         val exchangesDB = createExchangesDB()
@@ -57,9 +56,7 @@ class SplashViewModelTest {
         whenever(cryptosDao.getAll()).thenReturn(Observable.just(cryptosDB))
 
         viewModel = createViewModel()
-        viewModel.status.observeForever { status = it }
-
-        assertThat(status).isEqualTo(Status.SUCCESS)
+        viewModel.status.observeOnce { assertThat(it).isEqualTo(Status.SUCCESS) }
     }
 
     @Test
@@ -83,9 +80,7 @@ class SplashViewModelTest {
         whenever(cryptosDao.insertAll(createCryptosDB())).thenReturn(Completable.complete())
 
         viewModel = createViewModel()
-        viewModel.status.observeForever { status = it }
-
-        assertThat(status).isEqualTo(Status.SUCCESS)
+        viewModel.status.observeOnce { assertThat(it).isEqualTo(Status.SUCCESS) }
     }
 
     @Test
@@ -108,9 +103,7 @@ class SplashViewModelTest {
         whenever(cryptosDao.insertAll(createCryptosDB())).thenReturn(Completable.complete())
 
         viewModel = createViewModel()
-        viewModel.status.observeForever { status = it }
-
-        assertThat(status).isEqualTo(Status.ERROR("No network available, please check your WiFi or Data connection"))
+        viewModel.status.observeOnce { assertThat(it).isEqualTo(Status.ERROR("No network available, please check your WiFi or Data connection")) }
     }
 
     @Test
@@ -134,9 +127,7 @@ class SplashViewModelTest {
         whenever(cryptosDao.insertAll(createCryptosDB())).thenReturn(Completable.complete())
 
         viewModel = createViewModel()
-        viewModel.status.observeForever { status = it }
-
-        assertThat(status).isEqualTo(Status.ERROR("No network available, please check your WiFi or Data connection"))
+        viewModel.status.observeOnce { assertThat(it).isEqualTo(Status.ERROR("No network available, please check your WiFi or Data connection")) }
     }
 
     @Test
@@ -160,9 +151,7 @@ class SplashViewModelTest {
         whenever(cryptoCompareApi.getAllCrypto()).thenReturn(Observable.error(error))
 
         viewModel = createViewModel()
-        viewModel.status.observeForever { status = it }
-
-        assertThat(status).isEqualTo(Status.ERROR("No network available, please check your WiFi or Data connection"))
+        viewModel.status.observeOnce { assertThat(it).isEqualTo(Status.ERROR("No network available, please check your WiFi or Data connection")) }
     }
 
     private fun createCryptosString(): String {

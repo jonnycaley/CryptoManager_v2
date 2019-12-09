@@ -9,9 +9,9 @@ import com.example.cryptomanager_v2.data.db.cryptos.DBCryptoBuilder
 import com.example.cryptomanager_v2.data.db.cryptos.DBCryptosDao
 import com.example.cryptomanager_v2.data.db.exchanges.DBExchangeBuilder
 import com.example.cryptomanager_v2.data.db.exchanges.DBExchangesDao
-import com.example.cryptomanager_v2.data.db.fiats.DBFiat
 import com.example.cryptomanager_v2.data.db.fiats.DBFiatsBuilder
 import com.example.cryptomanager_v2.data.db.fiats.DBFiatsDao
+import com.example.cryptomanager_v2.utils.observeOnce
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -27,8 +27,6 @@ class DatabaseTest {
     private lateinit var dbCryptosDao: DBCryptosDao
     private lateinit var dbExchangesDao: DBExchangesDao
     private lateinit var dbFiatsDao: DBFiatsDao
-
-    private lateinit var fiatsObserver: List<DBFiat>
 
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
@@ -78,9 +76,9 @@ class DatabaseTest {
         dbFiatsDao.insertAll(fiats).test()
 
         dbFiatsDao.getAll()
-            .observeForever { fiatsObserver = it }
-
-        assert(fiatsObserver[0] == fiats[0])
+            .observeOnce {
+                assert(it[0] == fiats[0])
+            }
 
     }
 }
