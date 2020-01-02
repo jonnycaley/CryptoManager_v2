@@ -12,6 +12,9 @@ interface DBFiatsDao {
     @Query("SELECT * FROM DBFiat")
     fun getAll(): LiveData<List<DBFiat>>
 
+    @Query("SELECT * FROM DBFiat WHERE isBaseFiat = 1")
+    fun getBaseFiat(): LiveData<DBFiat>
+
     @Insert
     fun insertAll(fiats: List<DBFiat>): Completable
 }
