@@ -5,4 +5,27 @@
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
     <string name="title_settings">Settings</string>
+
+    <!-- Strings for settings fragment -->
+    <string name="settings_fragment_general_title">General</string>
+    <string-array name="settings_fragment_general">
+        <item>Select Base Currency %s %.0f</item>
+        <item>Night Mode</item>
+    </string-array>
+    <string name="settings_fragment_data_title">Data</string>
+    <string-array name="settings_fragment_data">
+        <item>Saved Articles</item>
+        <item>Full Transaction History</item>
+        <item>Delete All Articles</item>
+        <item>Delete Portfolio</item>
+    </string-array>
+    <string name="settings_fragment_about_title">About</string>
+    <string-array name="settings_fragment_about">
+        <item>Review This App</item>
+        <item>Share This App</item>
+        <item>Send Feedback</item>
+        <item>Version %s</item>
+    </string-array>
+
+
 </resources>
