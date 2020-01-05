@@ -8,12 +8,17 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.example.cryptomanager_v2.R
+import com.example.cryptomanager_v2.data.db.fiats.DBFiat
 import dagger.android.support.DaggerFragment
+import kotlinx.android.synthetic.main.fragment_settings.*
 import javax.inject.Inject
 
 class SettingsFragment : DaggerFragment() {
     @Inject
     lateinit var factory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var settingsEpoxyController: SettingsEpoxyController
 
     private lateinit var viewModel: SettingsViewModel
 
@@ -23,11 +28,19 @@ class SettingsFragment : DaggerFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
         viewModel = ViewModelProviders.of(this, factory)[SettingsViewModel::class.java]
 
-        viewModel.fiats.observe(this, Observer {
-            println(it)
-        })
+        epoxy_recycler_settings.apply {
+            setController(settingsEpoxyController)
+        }
 
+        viewModel.baseFiat.observe(this, Observer {
+            loadSettings(it)
+        })
+    }
+
+    private fun loadSettings(baseFiat: DBFiat) {
+        settingsEpoxyController.setData(baseFiat)
     }
 }
