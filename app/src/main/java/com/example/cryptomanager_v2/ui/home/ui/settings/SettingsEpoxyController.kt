@@ -2,43 +2,44 @@ package com.example.cryptomanager_v2.ui.home.ui.settings
 
 import android.content.res.Resources
 import com.airbnb.epoxy.TypedEpoxyController
-import com.example.cryptomanager_v2.R
-import com.example.cryptomanager_v2.data.db.fiats.DBFiat
+import com.example.cryptomanager_v2.ui.home.ui.settings.models.ClickableItem
+import com.example.cryptomanager_v2.ui.home.ui.settings.models.item
 import com.example.cryptomanager_v2.ui.home.ui.settings.models.title
 import javax.inject.Inject
 
 class SettingsEpoxyController @Inject constructor(
     private val resources: Resources
-): TypedEpoxyController<DBFiat>() {
+): TypedEpoxyController<SettingsData>() {
 
-    override fun buildModels(baseFiat: DBFiat) {
-        buildGeneral()
-        buildData()
-        buildAbout()
+    override fun buildModels(settingsData: SettingsData) {
+        settingsData.sections.forEach {
+            buildTitle(it.title)
+            it.items.forEach { item ->
+                buildItem(item)
+            }
+        }
     }
-
-    private fun buildGeneral() {
-        val titleString = resources.getString(R.string.settings_fragment_general_title)
-        title {
-            id("GeneralTitle")
-            title(titleString)
+    private fun buildItem(item: ClickableItem) {
+        item {
+            id(item.text)
+            title(item.text)
+            onItemClickListener { _ -> item.clickListener }
         }
     }
 
-
-    private fun buildData() {
-        val titleString = resources.getString(R.string.settings_fragment_data_title)
+    private fun buildTitle(title: String) {
         title {
-            id("DataTitle")
-            title(titleString)
-        }
-    }
-
-    private fun buildAbout() {
-        val titleString = resources.getString(R.string.settings_fragment_about_title)
-        title {
-            id("AboutTitle")
-            title(titleString)
+            id(title)
+            title(title)
         }
     }
 }
+
+data class SettingsData(
+    val sections: List<Section>
+)
+
+data class Section(
+    val title: String,
+    val items: List<ClickableItem>
+)
