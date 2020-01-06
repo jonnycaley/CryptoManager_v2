@@ -16,15 +16,20 @@ abstract class ItemModel: EpoxyModelWithHolder<ItemModel.Holder>() {
     lateinit var title: String
 
     @EpoxyAttribute(EpoxyAttribute.Option.DoNotHash)
-    lateinit var onItemClickListener: View.OnClickListener
+    lateinit var onItemClickAction: () -> Unit
 
     override fun bind(holder: Holder) {
         holder.itemText.text = title
+        holder.itemView.setOnClickListener {
+            onItemClickAction.invoke()
+        }
     }
 
     inner class Holder: EpoxyHolder() {
         lateinit var itemText: TextView
+        lateinit var itemView: View
         override fun bindView(itemView: View) {
+            this.itemView = itemView
             itemText = itemView.findViewById(R.id.text_item)
         }
     }
@@ -33,5 +38,5 @@ abstract class ItemModel: EpoxyModelWithHolder<ItemModel.Holder>() {
 
 data class ClickableItem(
     var text: String,
-    var clickListener: Unit
+    var clickAction: () -> Unit
 )
