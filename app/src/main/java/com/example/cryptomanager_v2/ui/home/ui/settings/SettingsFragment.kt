@@ -34,12 +34,12 @@ class SettingsFragment : DaggerFragment() {
             setController(settingsEpoxyController)
         }
 
-        viewModel.settingsData.observe(this, Observer {
-            loadSettings(it)
+        viewModel.baseFiat.observe(this, Observer {
+            viewModel.loadSettingsSections(it)
         })
-    }
 
-    private fun loadSettings(settingsData: SettingsData) {
-        settingsEpoxyController.setData(settingsData)
+        viewModel.settingsData.observe(this, Observer {
+            settingsEpoxyController.setData(it)
+        })
     }
 }
