@@ -8,7 +8,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.example.cryptomanager_v2.R
-import com.example.cryptomanager_v2.data.db.fiats.DBFiat
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_settings.*
 import javax.inject.Inject
@@ -35,12 +34,12 @@ class SettingsFragment : DaggerFragment() {
             setController(settingsEpoxyController)
         }
 
-        viewModel.baseFiat.observe(this, Observer {
+        viewModel.settingsData.observe(this, Observer {
             loadSettings(it)
         })
     }
 
-    private fun loadSettings(baseFiat: DBFiat) {
-        settingsEpoxyController.setData(baseFiat)
+    private fun loadSettings(settingsData: SettingsData) {
+        settingsEpoxyController.setData(settingsData)
     }
 }
