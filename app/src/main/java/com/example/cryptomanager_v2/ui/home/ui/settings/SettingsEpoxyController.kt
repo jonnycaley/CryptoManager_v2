@@ -1,6 +1,5 @@
 package com.example.cryptomanager_v2.ui.home.ui.settings
 
-import android.content.res.Resources
 import com.airbnb.epoxy.TypedEpoxyController
 import com.example.cryptomanager_v2.ui.home.ui.settings.models.ClickableItem
 import com.example.cryptomanager_v2.ui.home.ui.settings.models.item
@@ -8,7 +7,6 @@ import com.example.cryptomanager_v2.ui.home.ui.settings.models.title
 import javax.inject.Inject
 
 class SettingsEpoxyController @Inject constructor(
-    private val resources: Resources
 ): TypedEpoxyController<SettingsData>() {
 
     override fun buildModels(settingsData: SettingsData) {
@@ -23,7 +21,7 @@ class SettingsEpoxyController @Inject constructor(
         item {
             id(item.text)
             title(item.text)
-            onItemClickListener { _ -> item.clickListener }
+            onItemClickAction { item.clickAction.invoke() }
         }
     }
 
