@@ -5,4 +5,7 @@
     <color name="colorAccent">#D81B60</color>
     <color name="text_color_primary">#000000</color>
     <color name="text_color_secondary">#000000</color>
+    <color name="background_color">#E6EBEF</color>
+    <color name="divider">#ADB7C1</color>
+    <color name="white">#FFFFFF</color>
 </resources>
