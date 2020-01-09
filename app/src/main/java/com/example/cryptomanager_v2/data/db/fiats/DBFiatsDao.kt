@@ -17,4 +17,10 @@ interface DBFiatsDao {
 
     @Insert
     fun insertAll(fiats: List<DBFiat>): Completable
+
+    @Query("UPDATE DBFiat SET isBaseFiat = 0 WHERE name != :fiatName")
+    fun resetFiats(fiatName: String)
+
+    @Query("UPDATE DBFiat SET isBaseFiat = 1 WHERE name = :fiatName")
+    fun setBaseFiat(fiatName: String)
 }
