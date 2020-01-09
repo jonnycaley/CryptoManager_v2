@@ -45,6 +45,6 @@ class SelectBaseFiatActivity: DaggerAppCompatActivity(), SelectBaseFiatControlle
     }
 
     override fun setBaseFiat(it: DBFiat) {
-        println("Set base fiat: ${it.name}")
+        viewModel.setBaseFiat(it)
     }
 }
