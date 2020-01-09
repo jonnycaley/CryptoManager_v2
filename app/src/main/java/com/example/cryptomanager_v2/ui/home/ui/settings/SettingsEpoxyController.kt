@@ -35,7 +35,9 @@ class SettingsEpoxyController @Inject constructor(
             item {
                 id(it.text)
                 title(it.text)
-                onItemClickAction { it.clickAction.invoke() }
+                onItemClickAction {
+                    it.clickAction.invoke()
+                }
             }
         }
     }
