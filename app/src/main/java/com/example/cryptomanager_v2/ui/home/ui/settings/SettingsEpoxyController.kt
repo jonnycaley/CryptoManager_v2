@@ -26,17 +26,17 @@ class SettingsEpoxyController @Inject constructor(
     }
 
     private fun buildItems(items: List<ClickableItem>) {
-        items.forEach {
-            if (it != items[0]){
+        items.forEachIndexed { index, clickableItem ->
+            if (index != 0){
                 dividerSmall {
                     id("divider_small")
                 }
             }
             item {
-                id(it.text)
-                title(it.text)
+                id(clickableItem.text)
+                title(clickableItem.text)
                 onItemClickAction {
-                    it.clickAction.invoke()
+                    clickableItem.clickAction.invoke()
                 }
             }
         }
