@@ -4,14 +4,14 @@ import android.annotation.SuppressLint
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.cryptomanager_v2.data.db.cryptos.DBCrypto
 import com.example.cryptomanager_v2.data.db.cryptos.DBCryptosDao
+import com.example.cryptomanager_v2.data.db.exchanges.DBExchange
 import com.example.cryptomanager_v2.data.db.exchanges.DBExchangesDao
+import com.example.cryptomanager_v2.data.db.fiats.DBFiat
 import com.example.cryptomanager_v2.data.db.fiats.DBFiatsDao
-import com.example.cryptomanager_v2.data.model.ExchangeRates.ExchangeRatesOld
-import com.example.cryptomanager_v2.data.model.cryptocompare.crytpo.Crypto
-import com.example.cryptomanager_v2.data.model.cryptocompare.exchanges.Exchange
-import com.example.cryptomanager_v2.data.network.cryptocompare.CryptoCompareApi
-import com.example.cryptomanager_v2.data.network.exchangerates.ExchangeRatesApi
+import com.example.cryptomanager_v2.data.network.cryptocompare.CryptoCompareService
+import com.example.cryptomanager_v2.data.network.exchangerates.ExchangeRatesService
 import com.example.cryptomanager_v2.utils.AppSchedulers
 import com.example.cryptomanager_v2.utils.Resource
 import com.example.cryptomanager_v2.utils.Status
@@ -23,12 +23,12 @@ import javax.inject.Inject
 
 @SuppressLint("CheckResult")
 class SplashViewModel @Inject constructor(
-    private val exchangeRatesApi: ExchangeRatesApi,
+    private val exchangeRatesService: ExchangeRatesService,
     private val schedulers: AppSchedulers,
     private val exchangesDao: DBExchangesDao,
     private val fiatsDao: DBFiatsDao,
     private val cryptosDao: DBCryptosDao,
-    private val cryptoCompareApi: CryptoCompareApi
+    private val cryptoCompareService: CryptoCompareService
 ): ViewModel() {
 
     private val compositeDisposable = CompositeDisposable()
@@ -99,7 +99,6 @@ class SplashViewModel @Inject constructor(
     }
 
     private fun checkExchangesDB() {
-
         exchangesDao.getAll()
             .subscribeOn(schedulers.io)
             .observeOn(schedulers.mainThread)
@@ -116,30 +115,31 @@ class SplashViewModel @Inject constructor(
     }
 
     private fun getExchanges() {
-
-        cryptoCompareApi.getAllExchanges()
-            .observeOn(schedulers.computation)
-            .map {
-                Exchange.exchangesToDBExchanges(it)
-            }
-            .flatMap {
-                exchangesDao.insertAll(it).toObservable<Int>()
-            }
+        cryptoCompareService.getAllExchanges()
             .subscribeOn(schedulers.io)
             .observeOn(schedulers.mainThread)
             .doOnSubscribe {
                 exchangesSubject.onNext(Resource.loading())
             }
-            .subscribe ({},{
-                exchangesSubject.onNext(Resource.error(it.localizedMessage))
+            .subscribe ({
+                saveExchanges(it)
             },{
-                exchangesSubject.onNext(Resource.success())
+                exchangesSubject.onNext(Resource.error(it.localizedMessage))
             })
             .addTo(compositeDisposable)
     }
+    private fun saveExchanges(it: List<DBExchange>) {
+        exchangesDao.insertAll(it)
+            .subscribeOn(schedulers.io)
+            .observeOn(schedulers.mainThread)
+            .subscribe ({
+                exchangesSubject.onNext(Resource.success())
+            }, {
+                exchangesSubject.onNext(Resource.error(it.localizedMessage))
+            }).addTo(compositeDisposable)
+    }
 
     private fun checkCryptosDB() {
-
         cryptosDao.getAll()
             .subscribeOn(schedulers.io)
             .observeOn(schedulers.mainThread)
@@ -155,32 +155,29 @@ class SplashViewModel @Inject constructor(
     }
 
     private fun getCryptos() {
-
-        cryptoCompareApi.getAllCrypto()
-            .observeOn(schedulers.computation)
-            .map { cryptoJson ->
-                Crypto.cryptosToDBCryptos(cryptoJson)
-            }
-            .flatMap { dbCrypto ->
-                cryptosDao.insertAll(dbCrypto).toObservable<Int>()
-            }
+        cryptoCompareService.getAllCrypto()
             .subscribeOn(schedulers.io)
             .observeOn(schedulers.mainThread)
             .doOnSubscribe {
                 cryptosSubject.onNext(Resource.loading())
             }
-            .subscribe ({
-
-            },{
+            .subscribe ({ saveCryptos(it) },{
                 cryptosSubject.onNext(Resource.error(it.localizedMessage))
-            },{
-                cryptosSubject.onNext(Resource.success())
             })
             .addTo(compositeDisposable)
     }
+    private fun saveCryptos(dbCryptos: List<DBCrypto>) {
+        cryptosDao.insertAll(dbCryptos)
+            .subscribeOn(schedulers.io)
+            .observeOn(schedulers.mainThread)
+            .subscribe ({
+                cryptosSubject.onNext(Resource.success())
+            }, {
+                cryptosSubject.onNext(Resource.error(it.localizedMessage))
+            }).addTo(compositeDisposable)
+    }
 
     private fun checkFiatsDB() {
-
         fiatsDao.getAll()
             .observeForever {
                 if (it.isNotEmpty())
@@ -191,7 +188,6 @@ class SplashViewModel @Inject constructor(
     }
 
     fun retry() {
-
         if (fiatsSubject.value?.status is Status.ERROR)
             getFiats()
         if (exchangesSubject.value?.status is Status.ERROR)
@@ -200,28 +196,30 @@ class SplashViewModel @Inject constructor(
             getCryptos()
     }
 
-    fun getFiats() {
-
-        exchangeRatesApi.getFiats()
-            .observeOn(schedulers.computation)
-            .map { exchangeRates ->
-                ExchangeRatesOld.ratesToDBFiats(exchangeRates)
-            }
-            .flatMap { dbFiats ->
-                fiatsDao.insertAll(dbFiats).toObservable<Int>()
-            }
-            .subscribeOn(schedulers.computation)
+    private fun getFiats() {
+        exchangeRatesService.getFiats()
+            .subscribeOn(schedulers.io)
             .observeOn(schedulers.mainThread)
             .doOnSubscribe {
                 fiatsSubject.onNext(Resource.loading())
             }
             .subscribe ({
+                saveFiats(it)
             },{
                 fiatsSubject.onNext(Resource.error(it.message ?: "An error occurred, please try again later."))
-            }, {
-                fiatsSubject.onNext(Resource.success())
             })
             .addTo(compositeDisposable)
+    }
+    private fun saveFiats(dbFiats: List<DBFiat>) {
+        fiatsDao.insertAll(dbFiats)
+            .subscribeOn(schedulers.io)
+            .observeOn(schedulers.computation)
+            .subscribe({
+                fiatsSubject.onNext(Resource.success())
+            },{
+                fiatsSubject.onNext(Resource.error(it.message ?: "An error occurred, please try again later."))
+            }).addTo(compositeDisposable)
+
     }
 
     override fun onCleared() {
