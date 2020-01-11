@@ -5,6 +5,6 @@ import javax.inject.Inject
 
 class SelectBaseFiatPresentationMapper @Inject constructor() {
     fun formatFiat(dbFiat: DBFiat): String {
-        return "${dbFiat.name} ${dbFiat.rate}"
+        return "${dbFiat.name} ${dbFiat.rate} ${dbFiat.isBaseFiat}"
     }
 }
