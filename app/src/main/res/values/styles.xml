@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
@@ -9,6 +9,17 @@
         <!-- Remove actionbar -->
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+
+        <!-- enable window content transitions -->
+        <item name="android:windowActivityTransitions" tools:targetApi="lollipop">true</item>
+        <item name="android:windowAnimationStyle">@style/WindowAnimationTransition</item>
+
     </style>
 
+    <style name="WindowAnimationTransition">
+        <item name="android:activityOpenEnterAnimation">@anim/new_activity_open</item>
+        <item name="android:activityOpenExitAnimation">@anim/old_activity_close</item>
+        <item name="android:activityCloseEnterAnimation">@anim/old_activity_open</item>
+        <item name="android:activityCloseExitAnimation">@anim/new_activity_close</item>
+    </style>
 </resources>
