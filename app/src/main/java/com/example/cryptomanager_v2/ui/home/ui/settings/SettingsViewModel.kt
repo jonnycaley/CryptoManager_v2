@@ -30,10 +30,29 @@ class SettingsViewModel @Inject constructor(
     fun loadSettingsSections(baseFiat: DBFiat) {
 
         val generalSection = Section(getGeneralTitle(), getGeneralItems(baseFiat))
+        val dataSection = Section(getDataTitle(), getDataItems())
+        val aboutSection = Section(getAboutTitle(), getAboutItems())
 
-        val dataTitle = resources.getString(R.string.settings_fragment_data_title)
+        _settingsData.value = SettingsData(
+            listOf(generalSection, dataSection, aboutSection)
+        )
+    }
+
+    private fun getAboutTitle(): String = resources.getString(R.string.settings_fragment_about_title)
+    private fun getAboutItems(): List<ClickableItem> {
+        val aboutStrings = resources.getStringArray(R.array.settings_fragment_about)
+        return mutableListOf<ClickableItem>().apply {
+            add(ClickableItem(aboutStrings[0]) {println("Clicked 0!")})
+            add(ClickableItem(aboutStrings[1]) {println("Clicked 1!")})
+            add(ClickableItem(aboutStrings[2]) {println("Clicked 2!")})
+            add(ClickableItem(String.format(aboutStrings[3], BuildConfig.VERSION_NAME)) {println("Clicked 3!")})
+        }
+    }
+
+    private fun getDataTitle(): String = resources.getString(R.string.settings_fragment_data_title)
+    private fun getDataItems(): List<ClickableItem> {
         val dataStrings = resources.getStringArray(R.array.settings_fragment_data)
-        val dataItems = mutableListOf<ClickableItem>().apply {
+        return mutableListOf<ClickableItem>().apply {
             add(ClickableItem(dataStrings[0]) {
                 println("Clicker 0!")
             })
@@ -47,22 +66,9 @@ class SettingsViewModel @Inject constructor(
                 println("Clicked 3!")
             })
         }
-        val dataSection = Section(dataTitle, dataItems)
-
-        val aboutTitle = resources.getString(R.string.settings_fragment_about_title)
-        val aboutStrings = resources.getStringArray(R.array.settings_fragment_about)
-        val aboutItems = mutableListOf<ClickableItem>().apply {
-            add(ClickableItem(aboutStrings[0]) {println("Clicked 0!")})
-            add(ClickableItem(aboutStrings[1]) {println("Clicked 1!")})
-            add(ClickableItem(aboutStrings[2]) {println("Clicked 2!")})
-            add(ClickableItem(String.format(aboutStrings[3], BuildConfig.VERSION_NAME)) {println("Clicked 3!")})
-        }
-        val aboutSection = Section(aboutTitle, aboutItems)
-
-        _settingsData.value = SettingsData(
-            listOf(generalSection, dataSection, aboutSection)
-        )
     }
+
+    private fun getGeneralTitle() = resources.getString(R.string.settings_fragment_general_title)
     private fun getGeneralItems(baseFiat: DBFiat): List<ClickableItem> {
         val generalStrings = resources.getStringArray(R.array.settings_fragment_general)
         return mutableListOf<ClickableItem>().apply {
@@ -74,8 +80,6 @@ class SettingsViewModel @Inject constructor(
             })
         }
     }
-
-    private fun getGeneralTitle() = resources.getString(R.string.settings_fragment_general_title)
 }
 
 //data class Settings(val settingsSections: SettingsSections)
