@@ -9,7 +9,7 @@
     <!-- Strings for settings fragment -->
     <string name="settings_fragment_general_title">General</string>
     <string-array name="settings_fragment_general">
-        <item>Select Base Currency %s %.0f</item>
+        <item>Select Base Currency %s %.8f</item>
         <item>Night Mode</item>
     </string-array>
     <string name="settings_fragment_data_title">Data</string>
