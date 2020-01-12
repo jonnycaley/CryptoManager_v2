@@ -1,7 +1,6 @@
 package com.example.cryptomanager_v2.data.model.cryptocompare.crytpo
 
 import com.example.cryptomanager_v2.data.db.cryptos.DBCrypto
-import com.google.gson.Gson
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import org.json.JSONException
@@ -87,14 +86,15 @@ class Crypto {
         ) : List<DBCrypto>{
             return mutableListOf<DBCrypto>().apply {
                 try {
-                    val jObject = JSONObject(json).getJSONObject("Data")
-                    val keys = jObject.keys()
-                    while (keys.hasNext()) {
+                    val jObject = JSONObject(json).optJSONObject("Data")
+                    val keys = jObject?.keys()
+                    while (keys != null && keys.hasNext()) {
                         val name = keys.next()
-                        val value = jObject.getJSONObject(name)
-                        val dBCrypto = cryptoToDBCrypto(value)
-
-                        add(dBCrypto)
+                        val value = jObject.optJSONObject(name)
+                        value?.let {
+                            val dBCrypto = cryptoToDBCrypto(it)
+                            add(dBCrypto)
+                        }
                     }
                 } catch (e: JSONException) {
                     e.printStackTrace()
@@ -104,14 +104,14 @@ class Crypto {
 
         private fun cryptoToDBCrypto(cryptoInfo: JSONObject) : DBCrypto {
             return DBCrypto(
-                id = cryptoInfo.get("Id") as String,
-                name = cryptoInfo.get("Name") as String,
-                imageUrl = cryptoInfo.get("ImageUrl") as String?,
-                contentCreatedOn = cryptoInfo.get("ContentCreatedOn") as Int?,
-                symbol = cryptoInfo.get("Symbol") as String?,
-                coinName = cryptoInfo.get("CoinName") as String?,
-                fullName = cryptoInfo.get("FullName") as String?,
-                totalCoinSupply = cryptoInfo.get("TotalCoinSupply") as String?
+                id = cryptoInfo.opt("Id") as String,
+                name = cryptoInfo.opt("Name") as String,
+                imageUrl = cryptoInfo.opt("ImageUrl") as String?,
+                contentCreatedOn = cryptoInfo.opt("ContentCreatedOn") as Int?,
+                symbol = cryptoInfo.opt("Symbol") as String?,
+                coinName = cryptoInfo.opt("CoinName") as String?,
+                fullName = cryptoInfo.opt("FullName") as String?,
+                totalCoinSupply = cryptoInfo.opt("TotalCoinSupply") as String?
             )
         }
     }
