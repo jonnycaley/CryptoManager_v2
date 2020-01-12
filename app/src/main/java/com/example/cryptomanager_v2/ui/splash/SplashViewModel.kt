@@ -5,11 +5,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.cryptomanager_v2.data.db.cryptos.DBCrypto
-import com.example.cryptomanager_v2.data.db.cryptos.DBCryptosDao
+import com.example.cryptomanager_v2.data.db.cryptos.DBCryptoService
 import com.example.cryptomanager_v2.data.db.exchanges.DBExchange
-import com.example.cryptomanager_v2.data.db.exchanges.DBExchangesDao
+import com.example.cryptomanager_v2.data.db.exchanges.DBExchangesService
 import com.example.cryptomanager_v2.data.db.fiats.DBFiat
-import com.example.cryptomanager_v2.data.db.fiats.DBFiatsDao
+import com.example.cryptomanager_v2.data.db.fiats.DBFiatsService
 import com.example.cryptomanager_v2.data.network.cryptocompare.CryptoCompareService
 import com.example.cryptomanager_v2.data.network.exchangerates.ExchangeRatesService
 import com.example.cryptomanager_v2.utils.AppSchedulers
@@ -25,9 +25,9 @@ import javax.inject.Inject
 class SplashViewModel @Inject constructor(
     private val exchangeRatesService: ExchangeRatesService,
     private val schedulers: AppSchedulers,
-    private val exchangesDao: DBExchangesDao,
-    private val fiatsDao: DBFiatsDao,
-    private val cryptosDao: DBCryptosDao,
+    private val dbExchangesService: DBExchangesService,
+    private val dbFiatsService: DBFiatsService,
+    private val dbCryptoService: DBCryptoService,
     private val cryptoCompareService: CryptoCompareService
 ): ViewModel() {
 
@@ -99,14 +99,17 @@ class SplashViewModel @Inject constructor(
     }
 
     private fun checkExchangesDB() {
-        exchangesDao.getAll()
+        println("checkExchangesDB()")
+        dbExchangesService.dbHasData()
             .subscribeOn(schedulers.io)
             .observeOn(schedulers.mainThread)
             .doOnSubscribe {
+                println("Badger: Checking exchanges db")
                 exchangesSubject.onNext(Resource.loading())
             }
-            .subscribe {
-                if(it.isNotEmpty())
+            .subscribe { hasData ->
+                println("Badger: Exchanges db has data? -> $hasData")
+                if(hasData)
                     exchangesSubject.onNext(Resource.success())
                 else
                     getExchanges()
@@ -128,8 +131,9 @@ class SplashViewModel @Inject constructor(
             })
             .addTo(compositeDisposable)
     }
-    private fun saveExchanges(it: List<DBExchange>) {
-        exchangesDao.insertAll(it)
+
+    private fun saveExchanges(exchanges: List<DBExchange>) {
+        dbExchangesService.insertAll(exchanges)
             .subscribeOn(schedulers.io)
             .observeOn(schedulers.mainThread)
             .subscribe ({
@@ -140,14 +144,14 @@ class SplashViewModel @Inject constructor(
     }
 
     private fun checkCryptosDB() {
-        cryptosDao.getAll()
+        dbCryptoService.dbHasData()
             .subscribeOn(schedulers.io)
             .observeOn(schedulers.mainThread)
             .doOnSubscribe {
                 cryptosSubject.onNext(Resource.loading())
             }
-            .subscribe {
-                if(it.isNotEmpty())
+            .subscribe { hasData ->
+                if(hasData)
                     cryptosSubject.onNext(Resource.success())
                 else
                     getCryptos()
@@ -161,13 +165,14 @@ class SplashViewModel @Inject constructor(
             .doOnSubscribe {
                 cryptosSubject.onNext(Resource.loading())
             }
-            .subscribe ({ saveCryptos(it) },{
+            .subscribe ({
+                saveCryptos(it)
+            }, {
                 cryptosSubject.onNext(Resource.error(it.localizedMessage))
-            })
-            .addTo(compositeDisposable)
+            }).addTo(compositeDisposable)
     }
     private fun saveCryptos(dbCryptos: List<DBCrypto>) {
-        cryptosDao.insertAll(dbCryptos)
+        dbCryptoService.insertAll(dbCryptos)
             .subscribeOn(schedulers.io)
             .observeOn(schedulers.mainThread)
             .subscribe ({
@@ -178,13 +183,10 @@ class SplashViewModel @Inject constructor(
     }
 
     private fun checkFiatsDB() {
-        fiatsDao.getAll()
-            .observeForever {
-                if (it.isNotEmpty())
-                    fiatsSubject.onNext(Resource.success())
-                else
-                    getFiats()
-            }
+        if (dbFiatsService.hasFiatsData())
+            fiatsSubject.onNext(Resource.success())
+        else
+            getFiats()
     }
 
     fun retry() {
@@ -211,9 +213,9 @@ class SplashViewModel @Inject constructor(
             .addTo(compositeDisposable)
     }
     private fun saveFiats(dbFiats: List<DBFiat>) {
-        fiatsDao.insertAll(dbFiats)
+        dbFiatsService.insertAll(dbFiats)
             .subscribeOn(schedulers.io)
-            .observeOn(schedulers.computation)
+            .observeOn(schedulers.mainThread)
             .subscribe({
                 fiatsSubject.onNext(Resource.success())
             },{
