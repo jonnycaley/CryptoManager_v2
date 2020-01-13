@@ -1,17 +1,15 @@
 package com.example.cryptomanager_v2.ui.splash
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.MutableLiveData
 import com.example.cryptomanager_v2.data.db.cryptos.DBCrypto
-import com.example.cryptomanager_v2.data.db.cryptos.DBCryptosDao
+import com.example.cryptomanager_v2.data.db.cryptos.DBCryptoService
 import com.example.cryptomanager_v2.data.db.exchanges.DBExchange
-import com.example.cryptomanager_v2.data.db.exchanges.DBExchangesDao
+import com.example.cryptomanager_v2.data.db.exchanges.DBExchangesService
 import com.example.cryptomanager_v2.data.db.exchanges.cryptos.DBExchangeCrypto
 import com.example.cryptomanager_v2.data.db.fiats.DBFiat
-import com.example.cryptomanager_v2.data.db.fiats.DBFiatsDao
-import com.example.cryptomanager_v2.data.model.cryptocompare.exchanges.Exchange
-import com.example.cryptomanager_v2.data.network.cryptocompare.CryptoCompareApi
-import com.example.cryptomanager_v2.data.network.exchangerates.ExchangeRatesApi
+import com.example.cryptomanager_v2.data.db.fiats.DBFiatsService
+import com.example.cryptomanager_v2.data.network.cryptocompare.CryptoCompareService
+import com.example.cryptomanager_v2.data.network.exchangerates.ExchangeRatesService
 import com.example.cryptomanager_v2.utils.AppSchedulers
 import com.example.cryptomanager_v2.utils.NoConnectivityException
 import com.example.cryptomanager_v2.utils.Status
@@ -34,11 +32,11 @@ class SplashViewModelTest {
     @Rule
     val instantExecutorRule = InstantTaskExecutorRule()
 
-    private var exchangeRatesApi: ExchangeRatesApi = mock()
-    private var exchangesDao: DBExchangesDao = mock()
-    private var cryptosDao: DBCryptosDao = mock()
-    private var fiatsDao: DBFiatsDao = mock()
-    private var cryptoCompareApi: CryptoCompareApi = mock()
+    private var exchangeRatesService: ExchangeRatesService = mock()
+    private var dbExchangesService: DBExchangesService = mock()
+    private var dbCryptoService: DBCryptoService = mock()
+    private var dbFiatsService: DBFiatsService = mock()
+    private var cryptoCompareService: CryptoCompareService = mock()
 
     private var testSchedulers: AppSchedulers = TestAppSchedulers.get()
 
@@ -46,14 +44,11 @@ class SplashViewModelTest {
 
     @Test
     fun givenDatabasesTablesContainData_whenInit_thenSuccess() {
-        val exchangesDB = createExchangesDB()
-        whenever(exchangesDao.getAll()).thenReturn(Observable.just(exchangesDB))
+        whenever(dbExchangesService.dbHasData()).thenReturn(Observable.just(true))
 
-        val fiatsDB = createFiatsDB()
-        whenever(fiatsDao.getAll()).thenReturn(MutableLiveData<List<DBFiat>>(fiatsDB))
+        whenever(dbFiatsService.hasFiatsData()).thenReturn(true)
 
-        val cryptosDB = createCryptosDB()
-        whenever(cryptosDao.getAll()).thenReturn(Observable.just(cryptosDB))
+        whenever(dbCryptoService.dbHasData()).thenReturn(Observable.just(true))
 
         viewModel = createViewModel()
         viewModel.status.observeOnce { assertThat(it).isEqualTo(Status.SUCCESS) }
@@ -61,23 +56,20 @@ class SplashViewModelTest {
 
     @Test
     fun givenDatabaseTablesContainNoData_whenInit_thenSuccess() {
-        val emptyExchangesDB = createEmptyExchangesDB()
-        whenever(exchangesDao.getAll()).thenReturn(Observable.just(emptyExchangesDB))
-        val exchanges = createExchangesString()
-        whenever(cryptoCompareApi.getAllExchanges()).thenReturn(Observable.just(exchanges))
-        whenever(exchangesDao.insertAll(createExchangesDB())).thenReturn(Completable.complete())
+        whenever(dbExchangesService.dbHasData()).thenReturn(Observable.just(false))
+        val exchanges = createExchangesDB()
+        whenever(cryptoCompareService.getAllExchanges()).thenReturn(Observable.just(exchanges))
+        whenever(dbExchangesService.insertAll(exchanges)).thenReturn(Completable.complete())
 
-        val emptyFiatDB = createEmptyFiatsDB()
-        whenever(fiatsDao.getAll()).thenReturn(MutableLiveData<List<DBFiat>>(emptyFiatDB))
-        val fiats = createFiats()
-        whenever(exchangeRatesApi.getFiats()).thenReturn(Observable.just(fiats))
-        whenever(fiatsDao.insertAll(createFiatsDB())).thenReturn(Completable.complete())
+        whenever(dbFiatsService.hasFiatsData()).thenReturn(false)
+        val fiats = createFiatsDB()
+        whenever(exchangeRatesService.getFiats()).thenReturn(Observable.just(fiats))
+        whenever(dbFiatsService.insertAll(fiats)).thenReturn(Completable.complete())
 
-        val emptyCryptosDB = createEmptyCryptosDB()
-        whenever(cryptosDao.getAll()).thenReturn(Observable.just(emptyCryptosDB))
-        val cryptos = createCryptosString()
-        whenever(cryptoCompareApi.getAllCrypto()).thenReturn(Observable.just(cryptos))
-        whenever(cryptosDao.insertAll(createCryptosDB())).thenReturn(Completable.complete())
+        whenever(dbCryptoService.dbHasData()).thenReturn(Observable.just(false))
+        val cryptos = createCryptosDB()
+        whenever(cryptoCompareService.getAllCrypto()).thenReturn(Observable.just(cryptos))
+        whenever(dbCryptoService.insertAll(cryptos)).thenReturn(Completable.complete())
 
         viewModel = createViewModel()
         viewModel.status.observeOnce { assertThat(it).isEqualTo(Status.SUCCESS) }
@@ -85,22 +77,19 @@ class SplashViewModelTest {
 
     @Test
     fun givenGetAllExchangesError_whenInit_thenError() {
-        val emptyExchangesDB = createEmptyExchangesDB()
-        whenever(exchangesDao.getAll()).thenReturn(Observable.just(emptyExchangesDB))
+        whenever(dbExchangesService.dbHasData()).thenReturn(Observable.just(false))
         val error = NoConnectivityException()
-        whenever(cryptoCompareApi.getAllExchanges()).thenReturn(Observable.error(error))
+        whenever(cryptoCompareService.getAllExchanges()).thenReturn(Observable.error(error))
 
-        val emptyFiatDB = createEmptyFiatsDB()
-        whenever(fiatsDao.getAll()).thenReturn(MutableLiveData<List<DBFiat>>(emptyFiatDB))
-        val fiats = createFiats()
-        whenever(exchangeRatesApi.getFiats()).thenReturn(Observable.just(fiats))
-        whenever(fiatsDao.insertAll(createFiatsDB())).thenReturn(Completable.complete())
+        whenever(dbFiatsService.hasFiatsData()).thenReturn(false)
+        val fiats = createFiatsDB()
+        whenever(exchangeRatesService.getFiats()).thenReturn(Observable.just(fiats))
+        whenever(dbFiatsService.insertAll(fiats)).thenReturn(Completable.complete())
 
-        val emptyCryptosDB = createEmptyCryptosDB()
-        whenever(cryptosDao.getAll()).thenReturn(Observable.just(emptyCryptosDB))
-        val cryptos = createCryptosString()
-        whenever(cryptoCompareApi.getAllCrypto()).thenReturn(Observable.just(cryptos))
-        whenever(cryptosDao.insertAll(createCryptosDB())).thenReturn(Completable.complete())
+        whenever(dbCryptoService.dbHasData()).thenReturn(Observable.just(false))
+        val cryptos = createCryptosDB()
+        whenever(cryptoCompareService.getAllCrypto()).thenReturn(Observable.just(cryptos))
+        whenever(dbCryptoService.insertAll(cryptos)).thenReturn(Completable.complete())
 
         viewModel = createViewModel()
         viewModel.status.observeOnce { assertThat(it).isEqualTo(Status.ERROR("No network available, please check your WiFi or Data connection")) }
@@ -108,23 +97,19 @@ class SplashViewModelTest {
 
     @Test
     fun givenGetAllFiatsError_whenInit_thenError() {
-        val emptyExchangesDB = createEmptyExchangesDB()
-        whenever(exchangesDao.getAll()).thenReturn(Observable.just(emptyExchangesDB))
-        val exchanges = createExchangesString()
-        whenever(cryptoCompareApi.getAllExchanges()).thenReturn(Observable.just(exchanges))
-        val dbExchanges = Exchange.exchangesToDBExchanges(exchanges)
-        whenever(exchangesDao.insertAll(dbExchanges)).thenReturn(Completable.complete())
+        whenever(dbExchangesService.dbHasData()).thenReturn(Observable.just(false))
+        val exchanges = createExchangesDB()
+        whenever(cryptoCompareService.getAllExchanges()).thenReturn(Observable.just(exchanges))
+        whenever(dbExchangesService.insertAll(exchanges)).thenReturn(Completable.complete())
 
-        val emptyFiatDB = createEmptyFiatsDB()
-        whenever(fiatsDao.getAll()).thenReturn(MutableLiveData<List<DBFiat>>(emptyFiatDB))
+        whenever(dbFiatsService.hasFiatsData()).thenReturn(false)
         val error = NoConnectivityException()
-        whenever(exchangeRatesApi.getFiats()).thenReturn(Observable.error(error))
+        whenever(exchangeRatesService.getFiats()).thenReturn(Observable.error(error))
 
-        val emptyCryptosDB = createEmptyCryptosDB()
-        whenever(cryptosDao.getAll()).thenReturn(Observable.just(emptyCryptosDB))
-        val cryptos = createCryptosString()
-        whenever(cryptoCompareApi.getAllCrypto()).thenReturn(Observable.just(cryptos))
-        whenever(cryptosDao.insertAll(createCryptosDB())).thenReturn(Completable.complete())
+        whenever(dbCryptoService.dbHasData()).thenReturn(Observable.just(false))
+        val cryptos = createCryptosDB()
+        whenever(cryptoCompareService.getAllCrypto()).thenReturn(Observable.just(cryptos))
+        whenever(dbCryptoService.insertAll(cryptos)).thenReturn(Completable.complete())
 
         viewModel = createViewModel()
         viewModel.status.observeOnce { assertThat(it).isEqualTo(Status.ERROR("No network available, please check your WiFi or Data connection")) }
@@ -132,42 +117,22 @@ class SplashViewModelTest {
 
     @Test
     fun givenGetAllCryptosError_whenInit_thenError() {
-        val emptyExchangesDB = createEmptyExchangesDB()
-        whenever(exchangesDao.getAll()).thenReturn(Observable.just(emptyExchangesDB))
-        val exchanges = createExchangesString()
-        whenever(cryptoCompareApi.getAllExchanges()).thenReturn(Observable.just(exchanges))
-        val dbExchanges = Exchange.exchangesToDBExchanges(exchanges)
-        whenever(exchangesDao.insertAll(dbExchanges)).thenReturn(Completable.complete())
+        whenever(dbExchangesService.dbHasData()).thenReturn(Observable.just(false))
+        val exchanges = createExchangesDB()
+        whenever(cryptoCompareService.getAllExchanges()).thenReturn(Observable.just(exchanges))
+        whenever(dbExchangesService.insertAll(exchanges)).thenReturn(Completable.complete())
 
-        val emptyFiatDB = createEmptyFiatsDB()
-        whenever(fiatsDao.getAll()).thenReturn(MutableLiveData<List<DBFiat>>(emptyFiatDB))
-        val fiats = createFiats()
-        whenever(exchangeRatesApi.getFiats()).thenReturn(Observable.just(fiats))
-        whenever(fiatsDao.insertAll(createFiatsDB())).thenReturn(Completable.complete())
+        whenever(dbFiatsService.hasFiatsData()).thenReturn(false)
+        val fiats = createFiatsDB()
+        whenever(exchangeRatesService.getFiats()).thenReturn(Observable.just(fiats))
+        whenever(dbFiatsService.insertAll(fiats)).thenReturn(Completable.complete())
 
-        val emptyCryptosDB = createEmptyCryptosDB()
-        whenever(cryptosDao.getAll()).thenReturn(Observable.just(emptyCryptosDB))
+        whenever(dbCryptoService.dbHasData()).thenReturn(Observable.just(false))
         val error = NoConnectivityException()
-        whenever(cryptoCompareApi.getAllCrypto()).thenReturn(Observable.error(error))
+        whenever(cryptoCompareService.getAllCrypto()).thenReturn(Observable.error(error))
 
         viewModel = createViewModel()
         viewModel.status.observeOnce { assertThat(it).isEqualTo(Status.ERROR("No network available, please check your WiFi or Data connection")) }
-    }
-
-    private fun createCryptosString(): String {
-        return readJsonFile("json/crypto_compare_get_all_crypto.json")
-    }
-
-    private fun createExchangesString(): String {
-        return readJsonFile("json/crypto_compare_get_all_exchanges.json")
-    }
-
-    private fun createFiats(): String {
-        return readJsonFile("json/exchange_rates_get_all_rates.json")
-    }
-
-    private fun readJsonFile(filePath: String): String {
-        return javaClass.classLoader?.getResource(filePath)?.readText().toString()
     }
 
     private fun createCryptosDB() = listOf(
@@ -182,12 +147,6 @@ class SplashViewModelTest {
             totalCoinSupply="42"
         ))
 
-    private fun createEmptyCryptosDB() = listOf<DBCrypto>()
-
-    private fun createEmptyFiatsDB() = listOf<DBFiat>()
-
-    private fun createEmptyExchangesDB() = listOf<DBExchange>()
-
     private fun createExchangesDB() = listOf(DBExchange(exchangeName = "ABCC", cryptos = DBExchangeCrypto(
         cryptos = listOf(
             Pair(first = "CND", second = listOf("BTC", "ETH"))
@@ -199,12 +158,12 @@ class SplashViewModelTest {
 
     private fun createViewModel() : SplashViewModel {
         return SplashViewModel(
-            exchangeRatesApi = exchangeRatesApi,
+            exchangeRatesService = exchangeRatesService,
             schedulers = testSchedulers,
-            exchangesDao = exchangesDao,
-            fiatsDao = fiatsDao,
-            cryptosDao = cryptosDao,
-            cryptoCompareApi = cryptoCompareApi
+            dbExchangesService = dbExchangesService,
+            dbFiatsService = dbFiatsService,
+            dbCryptoService = dbCryptoService,
+            cryptoCompareService = cryptoCompareService
         )
     }
 }
