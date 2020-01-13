@@ -27,13 +27,11 @@ class SelectBaseFiatViewModel @AssistedInject constructor(
 
         Single.fromCallable { fiatsDao.resetFiats(it.name) }
             .subscribeOn(schedulers.io)
-            .observeOn(schedulers.computation)
             .subscribe()
             .addTo(disposable)
 
         Single.fromCallable { fiatsDao.setBaseFiat(it.name) }
             .subscribeOn(schedulers.io)
-            .observeOn(schedulers.computation)
             .subscribe()
             .addTo(disposable)
     }
