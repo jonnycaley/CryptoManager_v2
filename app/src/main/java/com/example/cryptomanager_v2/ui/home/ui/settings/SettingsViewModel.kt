@@ -38,6 +38,19 @@ class SettingsViewModel @Inject constructor(
         )
     }
 
+    private fun getGeneralTitle() = resources.getString(R.string.settings_fragment_general_title)
+    private fun getGeneralItems(baseFiat: DBFiat): List<ClickableItem> {
+        val generalStrings = resources.getStringArray(R.array.settings_fragment_general)
+        return mutableListOf<ClickableItem>().apply {
+            add(ClickableItem(String.format(generalStrings[0], baseFiat.name, baseFiat.rate)) {
+                context.startActivity(SelectBaseFiatActivity.create(context))
+            })
+            add(ClickableItem(generalStrings[1]) {
+                println("Clicked 1!")
+            })
+        }
+    }
+
     private fun getAboutTitle(): String = resources.getString(R.string.settings_fragment_about_title)
     private fun getAboutItems(): List<ClickableItem> {
         val aboutStrings = resources.getStringArray(R.array.settings_fragment_about)
@@ -67,38 +80,4 @@ class SettingsViewModel @Inject constructor(
             })
         }
     }
-
-    private fun getGeneralTitle() = resources.getString(R.string.settings_fragment_general_title)
-    private fun getGeneralItems(baseFiat: DBFiat): List<ClickableItem> {
-        val generalStrings = resources.getStringArray(R.array.settings_fragment_general)
-        return mutableListOf<ClickableItem>().apply {
-            add(ClickableItem(String.format(generalStrings[0], baseFiat.name, baseFiat.rate)) {
-                context.startActivity(SelectBaseFiatActivity.create(context))
-            })
-            add(ClickableItem(generalStrings[1]) {
-                println("Clicked 1!")
-            })
-        }
-    }
 }
-
-//data class Settings(val settingsSections: SettingsSections)
-
-//sealed class SettingsSections {
-//    sealed class SettingsGeneral: SettingsSections() {
-//        class SelectBaseCurrency(baseFiat: DBFiat): SettingsGeneral()
-//        object NightMode: SettingsGeneral()
-//    }
-//    sealed class SettingsData: SettingsSections() {
-//        object SavedArticles: SettingsData()
-//        object TransactionHistory: SettingsData()
-//        object DeleteArticles: SettingsData()
-//        object DeletePortfolio: SettingsData()
-//    }
-//    sealed class SettingsAbout: SettingsSections() {
-//        object ReviewApp: SettingsAbout()
-//        object ShareApp: SettingsAbout()
-//        object SendFeedback: SettingsAbout()
-//        class Version(version: String): SettingsAbout()
-//    }
-//}
