@@ -8,19 +8,19 @@
     <fragment
         android:id="@+id/navigation_home"
         android:name="com.example.cryptomanager_v2.ui.home.ui.portfolio.PortfolioFragment"
-        android:label="@string/title_home"
+        android:label="@string/title_portfolio"
         tools:layout="@layout/fragment_portfolio" />
 
     <fragment
         android:id="@+id/navigation_dashboard"
         android:name="com.example.cryptomanager_v2.ui.home.ui.markets.MarketsFragment"
-        android:label="@string/title_dashboard"
+        android:label="@string/title_markets"
         tools:layout="@layout/fragment_markets" />
 
     <fragment
         android:id="@+id/navigation_notifications"
         android:name="com.example.cryptomanager_v2.ui.home.ui.news.NewsFragment"
-        android:label="@string/title_notifications"
+        android:label="@string/title_news"
         tools:layout="@layout/fragment_news" />
 
     <fragment
