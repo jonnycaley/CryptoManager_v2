@@ -1,8 +1,8 @@
-package com.example.cryptomanager_v2.data.model.ExchangeRates
+package com.example.cryptomanager_v2.data.model.exchangerates
 
-import java.io.Serializable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 import java.math.BigDecimal
 
 class Rate : Serializable {

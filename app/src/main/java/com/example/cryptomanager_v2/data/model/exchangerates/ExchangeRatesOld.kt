@@ -1,4 +1,4 @@
-package com.example.cryptomanager_v2.data.model.ExchangeRates
+package com.example.cryptomanager_v2.data.model.exchangerates
 
 import com.example.cryptomanager_v2.data.db.fiats.DBFiat
 import com.google.gson.annotations.SerializedName
