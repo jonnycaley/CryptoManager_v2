@@ -5,7 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import com.example.cryptomanager_v2.R
+import com.example.cryptomanager_v2.utils.Status
 import javax.inject.Inject
 
 class MarketsFragment : Fragment() {
@@ -14,7 +16,14 @@ class MarketsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        marketsViewModel
+        marketsViewModel.marketsData.observe(viewLifecycleOwner, Observer {
+            when(it.status){
+                is Status.SUCCESS -> TODO()
+                is Status.ERROR -> TODO()
+                is Status.LOADING -> TODO()
+                is Status.IDLE -> TODO()
+            }
+        })
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
