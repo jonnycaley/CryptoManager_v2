@@ -9,7 +9,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
-import retrofit2.converter.scalars.ScalarsConverterFactory
+import retrofit2.converter.moshi.MoshiConverterFactory
 import java.lang.annotation.Documented
 import javax.inject.Qualifier
 import javax.inject.Singleton
@@ -33,14 +33,14 @@ object CoinMarketCapModule {
     @JvmStatic
     @COINMARKETCAP
     internal fun provideCoinMarketCapRetrofit(
-        scalarsConverterFactory: ScalarsConverterFactory,
+        moshiConverterFactory: MoshiConverterFactory,
         rxJava2CallAdapterFactory: RxJava2CallAdapterFactory,
         @COINMARKETCAP okHttpClient: OkHttpClient
     ): Retrofit {
 
         return Retrofit.Builder()
             .baseUrl(Constants.URL_COINMARKETCAP)
-            .addConverterFactory(scalarsConverterFactory)
+            .addConverterFactory(moshiConverterFactory)
             .addCallAdapterFactory(rxJava2CallAdapterFactory)
             .client(okHttpClient)
             .build()
