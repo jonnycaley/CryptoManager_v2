@@ -2,6 +2,7 @@ package com.example.cryptomanager_v2.utils.di.modules
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.example.cryptomanager_v2.ui.home.ui.markets.MarketsViewModel
 import com.example.cryptomanager_v2.ui.home.ui.settings.SettingsViewModel
 import com.example.cryptomanager_v2.ui.splash.SplashViewModel
 import com.example.cryptomanager_v2.utils.di.ViewModelFactory
@@ -25,4 +26,9 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(SettingsViewModel::class)
     internal abstract fun settingsViewModel(viewModel: SettingsViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(MarketsViewModel::class)
+    internal abstract fun marketsViewModel(viewModel: MarketsViewModel): ViewModel
 }
