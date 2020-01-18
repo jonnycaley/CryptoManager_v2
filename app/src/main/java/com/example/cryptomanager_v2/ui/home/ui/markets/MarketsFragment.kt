@@ -4,25 +4,26 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import com.example.cryptomanager_v2.R
-import com.example.cryptomanager_v2.utils.Status
+import dagger.android.support.DaggerFragment
 import javax.inject.Inject
 
-class MarketsFragment : Fragment() {
+class MarketsFragment : DaggerFragment() {
     @Inject
-    lateinit var marketsViewModel: MarketsViewModel
+    lateinit var factory: ViewModelProvider.Factory
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        marketsViewModel.marketsData.observe(viewLifecycleOwner, Observer {
-            when(it.status){
-                is Status.SUCCESS -> TODO()
-                is Status.ERROR -> TODO()
-                is Status.LOADING -> TODO()
-                is Status.IDLE -> TODO()
-            }
+    lateinit var viewModel: MarketsViewModel
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+        viewModel = ViewModelProviders.of(this, factory)[MarketsViewModel::class.java]
+
+        viewModel.marketsData.observe(viewLifecycleOwner, Observer {
+            it
         })
     }
 
