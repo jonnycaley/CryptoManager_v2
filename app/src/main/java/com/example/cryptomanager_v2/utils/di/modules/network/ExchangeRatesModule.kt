@@ -45,4 +45,18 @@ object ExchangeRatesModule {
             .client(okHttpClient)
             .build()
     }
+
+    @Provides
+    @Singleton
+    @JvmStatic
+    @EXCHANGERATES
+    fun provideCryptoCompareOkHttpClient(
+        httpLoggingInterceptor: HttpLoggingInterceptor,
+        noInternetConnectionInterceptor: NoInternetConnectionInterceptor
+    ): OkHttpClient {
+        val httpClient = OkHttpClient.Builder()
+        httpClient.addInterceptor(httpLoggingInterceptor)
+        httpClient.addInterceptor(noInternetConnectionInterceptor)
+        return httpClient.build()
+    }
 }
