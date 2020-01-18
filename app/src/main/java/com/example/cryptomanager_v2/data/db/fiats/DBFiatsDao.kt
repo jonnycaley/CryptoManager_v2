@@ -3,6 +3,7 @@ package com.example.cryptomanager_v2.data.db.fiats
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import io.reactivex.Completable
 
@@ -15,7 +16,7 @@ interface DBFiatsDao {
     @Query("SELECT * FROM DBFiat WHERE isBaseFiat = 1")
     fun getBaseFiat(): LiveData<DBFiat>
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(fiats: List<DBFiat>): Completable
 
     @Query("UPDATE DBFiat SET isBaseFiat = 0 WHERE name != :fiatName")
