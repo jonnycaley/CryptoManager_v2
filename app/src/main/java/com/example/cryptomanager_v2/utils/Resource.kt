@@ -19,6 +19,22 @@ data class Resource<out T>(val status: Status, val data: T?) {
     }
 }
 
+fun <T> Array<Resource<T>>.getErrorMessage(): String {
+    return (this.first { it.status is Status.ERROR }.status as Status.ERROR).reason
+}
+
+fun <T> Array<Resource<T>>.areAnyError(): Boolean {
+    return this.any { it.status is Status.ERROR }
+}
+
+fun <T> Array<Resource<T>>.areAnyLoading(): Boolean {
+    return this.any { it.status is Status.LOADING }
+}
+
+fun <T> Array<Resource<T>>.areAnySuccess(): Boolean {
+    return this.any { it.status is Status.SUCCESS }
+}
+
 sealed class Status {
     object SUCCESS : Status()
     data class ERROR(val reason: String): Status()
