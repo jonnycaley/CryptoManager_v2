@@ -23,7 +23,6 @@ class SettingsViewModel @Inject constructor(
         get() = fiatsDao.getBaseFiat()
 
     private var _settingsData = MutableLiveData<SettingsData>()
-
     val settingsData: LiveData<SettingsData>
         get() = _settingsData
 
@@ -40,12 +39,12 @@ class SettingsViewModel @Inject constructor(
 
     private fun getGeneralTitle() = resources.getString(R.string.settings_fragment_general_title)
     private fun getGeneralItems(baseFiat: DBFiat): List<ClickableItem> {
-        val generalStrings = resources.getStringArray(R.array.settings_fragment_general)
+        val generalItemTitles = resources.getStringArray(R.array.settings_fragment_general)
         return mutableListOf<ClickableItem>().apply {
-            add(ClickableItem(String.format(generalStrings[0], baseFiat.name, baseFiat.rate)) {
+            add(ClickableItem(String.format(generalItemTitles[0], baseFiat.name, baseFiat.rate)) {
                 context.startActivity(SelectBaseFiatActivity.create(context))
             })
-            add(ClickableItem(generalStrings[1]) {
+            add(ClickableItem(generalItemTitles[1]) {
                 println("Clicked 1!")
             })
         }
@@ -53,29 +52,29 @@ class SettingsViewModel @Inject constructor(
 
     private fun getAboutTitle(): String = resources.getString(R.string.settings_fragment_about_title)
     private fun getAboutItems(): List<ClickableItem> {
-        val aboutStrings = resources.getStringArray(R.array.settings_fragment_about)
+        val aboutItemTitles = resources.getStringArray(R.array.settings_fragment_about)
         return mutableListOf<ClickableItem>().apply {
-            add(ClickableItem(aboutStrings[0]) {println("Clicked 0!")})
-            add(ClickableItem(aboutStrings[1]) {println("Clicked 1!")})
-            add(ClickableItem(aboutStrings[2]) {println("Clicked 2!")})
-            add(ClickableItem(String.format(aboutStrings[3], BuildConfig.VERSION_NAME)) {println("Clicked 3!")})
+            add(ClickableItem(aboutItemTitles[0]) {println("Clicked 0!")})
+            add(ClickableItem(aboutItemTitles[1]) {println("Clicked 1!")})
+            add(ClickableItem(aboutItemTitles[2]) {println("Clicked 2!")})
+            add(ClickableItem(String.format(aboutItemTitles[3], BuildConfig.VERSION_NAME)) {println("Clicked 3!")})
         }
     }
 
     private fun getDataTitle(): String = resources.getString(R.string.settings_fragment_data_title)
     private fun getDataItems(): List<ClickableItem> {
-        val dataStrings = resources.getStringArray(R.array.settings_fragment_data)
+        val dataItemTitles = resources.getStringArray(R.array.settings_fragment_data)
         return mutableListOf<ClickableItem>().apply {
-            add(ClickableItem(dataStrings[0]) {
+            add(ClickableItem(dataItemTitles[0]) {
                 println("Clicker 0!")
             })
-            add(ClickableItem(dataStrings[1]) {
+            add(ClickableItem(dataItemTitles[1]) {
                 println("Clicked 1!")
             })
-            add(ClickableItem(dataStrings[2]) {
+            add(ClickableItem(dataItemTitles[2]) {
                 println("Clicked 2!")
             })
-            add(ClickableItem(dataStrings[3]) {
+            add(ClickableItem(dataItemTitles[3]) {
                 println("Clicked 3!")
             })
         }
