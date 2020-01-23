@@ -1,5 +1,7 @@
 package com.example.cryptomanager_v2.utils.di.modules
 
+import android.content.Context
+import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.example.cryptomanager_v2.utils.AppSchedulers
 import com.example.cryptomanager_v2.utils.di.modules.network.CoinMarketCapModule
 import com.example.cryptomanager_v2.utils.di.modules.network.CryptoCompareModule
@@ -48,7 +50,17 @@ object NetworkModule {
     fun provideLoggingInterceptor() : HttpLoggingInterceptor {
         val interceptor = HttpLoggingInterceptor()
         interceptor.level = HttpLoggingInterceptor.Level.BODY
+
         return interceptor
+    }
+
+    @Provides
+    @Singleton
+    @JvmStatic
+    fun provideChuckerInterceptor(
+        context: Context
+    ): ChuckerInterceptor {
+        return ChuckerInterceptor(context)
     }
 
     @Provides

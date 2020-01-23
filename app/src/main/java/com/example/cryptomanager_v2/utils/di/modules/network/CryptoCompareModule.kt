@@ -1,5 +1,6 @@
 package com.example.cryptomanager_v2.utils.di.modules.network
 
+import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.example.cryptomanager_v2.data.network.cryptocompare.CryptoCompareApi
 import com.example.cryptomanager_v2.utils.Constants
 import com.example.cryptomanager_v2.utils.NoInternetConnectionInterceptor
@@ -27,7 +28,8 @@ object CryptoCompareModule {
     @CRYPTOCOMPARE
     fun provideCryptoCompareOkHttpClient(
         httpLoggingInterceptor: HttpLoggingInterceptor,
-        noInternetConnectionInterceptor: NoInternetConnectionInterceptor
+        noInternetConnectionInterceptor: NoInternetConnectionInterceptor,
+        chuckerInterceptor: ChuckerInterceptor
     ): OkHttpClient {
         val httpClient = OkHttpClient.Builder()
 
@@ -47,6 +49,7 @@ object CryptoCompareModule {
         }
         httpClient.addInterceptor(httpLoggingInterceptor)
         httpClient.addInterceptor(noInternetConnectionInterceptor)
+        httpClient.addInterceptor(chuckerInterceptor)
         return httpClient.build()
     }
 
