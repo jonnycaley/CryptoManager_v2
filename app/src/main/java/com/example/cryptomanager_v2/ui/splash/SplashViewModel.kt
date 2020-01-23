@@ -15,6 +15,10 @@ import com.example.cryptomanager_v2.data.network.exchangerates.ExchangeRatesServ
 import com.example.cryptomanager_v2.utils.AppSchedulers
 import com.example.cryptomanager_v2.utils.Resource
 import com.example.cryptomanager_v2.utils.Status
+import com.example.cryptomanager_v2.utils.areAnyError
+import com.example.cryptomanager_v2.utils.areAnyLoading
+import com.example.cryptomanager_v2.utils.areAnySuccess
+import com.example.cryptomanager_v2.utils.getErrorMessage
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.Observables
 import io.reactivex.rxkotlin.addTo
@@ -53,17 +57,17 @@ class SplashViewModel @Inject constructor(
             val arrayStates = arrayOf(exchangeRates, cryptos, exchanges)
 
             //If any are loading: show Loading
-            if(arrayStates.any { it.status is Status.LOADING })
+            if(arrayStates.areAnyLoading())
                 return@combineLatest Status.LOADING
 
             //If any are error: show Error
-            if(arrayStates.any { it.status is Status.ERROR }) {
-                val reason = (arrayStates.first { it.status is Status.ERROR }.status as Status.ERROR).reason
+            if(arrayStates.areAnyError()) {
+                val reason = arrayStates.getErrorMessage()
                 return@combineLatest Status.ERROR(reason)
             }
 
             //If all are success: show Success
-            if(arrayStates.all { it.status is Status.SUCCESS })
+            if(arrayStates.areAnySuccess())
                 return@combineLatest Status.SUCCESS
 
             //Else show Idle
@@ -73,7 +77,6 @@ class SplashViewModel @Inject constructor(
                 _status.value = it
             }
             .addTo(compositeDisposable)
-
 
         fiatsSubject
             .subscribe {
