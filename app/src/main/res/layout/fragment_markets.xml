@@ -8,10 +8,10 @@
     <com.airbnb.epoxy.EpoxyRecyclerView
         android:id="@+id/epoxy_recycler_markets"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="match_parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         tools:listitem="@layout/crypto_item"
-        tools:itemCount="1"/>
+        tools:itemCount="10"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
