@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:paddingStart="@dimen/margin_base_horizontal"
+    android:paddingTop="@dimen/margin_base_vertical"
+    android:paddingEnd="@dimen/margin_base_horizontal"
+    android:paddingBottom="@dimen/margin_base_vertical"
+    android:weightSum="3"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Market Cap"
+            android:textColor="@color/text_color_primary"
+            android:textSize="@dimen/text_size_body_2"
+            android:fontFamily="sans-serif"/>
+
+        <TextView
+            android:id="@+id/text_market_cap"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="$120.65 B"
+            android:textColor="@color/text_color_primary"
+            android:textSize="@dimen/text_size_body_2"
+            android:fontFamily="sans-serif"/>
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="24h Volume"
+            android:textColor="@color/text_color_primary"
+            android:textSize="@dimen/text_size_body_2"
+            android:fontFamily="sans-serif" />
+
+        <TextView
+            android:id="@+id/text_volume"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="$20.65 B"
+            android:textColor="@color/text_color_primary"
+            android:textSize="@dimen/text_size_body_2"
+            android:fontFamily="sans-serif" />
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="BTC Dominance"
+            android:textColor="@color/text_color_primary"
+            android:textSize="@dimen/text_size_body_2"
+            android:fontFamily="sans-serif" />
+
+        <TextView
+            android:id="@+id/text_btc_dominance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="53.21%"
+            android:textColor="@color/text_color_primary"
+            android:textSize="@dimen/text_size_body_2"
+            android:fontFamily="sans-serif"/>
+
+    </LinearLayout>
+
+</LinearLayout>
