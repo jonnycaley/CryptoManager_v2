@@ -6,4 +6,7 @@
     <dimen name="text_size_default">16sp</dimen>
     <dimen name="divider_large">0.5dp</dimen>
     <dimen name="divider_small">0.1dp</dimen>
+    <dimen name="text_size_body_2">14sp</dimen>
+    <dimen name="margin_base_horizontal">16dp</dimen>
+    <dimen name="margin_base_vertical">12dp</dimen>
 </resources>
