@@ -3,8 +3,8 @@ package com.example.cryptomanager_v2.ui.home.ui.markets
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
-import com.example.cryptomanager_v2.data.model.coinmarketcap.Currencies
-import com.example.cryptomanager_v2.data.model.coinmarketcap.market.Market
+import com.example.cryptomanager_v2.data.model.coinmarketcap.CurrenciesDto
+import com.example.cryptomanager_v2.data.model.coinmarketcap.market.MarketDto
 import com.example.cryptomanager_v2.data.network.coinmarketcap.CoinMarketCapService
 import com.example.cryptomanager_v2.utils.Resource
 import javax.inject.Inject
@@ -30,7 +30,7 @@ class MarketsViewModel @Inject constructor(
         _marketsData.addSource(coinMarketCapService.getMarketInfo()) { marketInfo ->
             _marketsData.setValue(
                 _marketsData.value?.copy(
-                    marketInfo = marketInfo
+                    marketDtoInfo = marketInfo
                 )
             )
         }
@@ -38,6 +38,6 @@ class MarketsViewModel @Inject constructor(
 }
 
 data class MarketsData(
-    val top100: Resource<Currencies> = Resource.idle(),
-    val marketInfo: Resource<Market> = Resource.idle()
+    val top100: Resource<CurrenciesDto> = Resource.idle(),
+    val marketDtoInfo: Resource<MarketDto> = Resource.idle()
 )

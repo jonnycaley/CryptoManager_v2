@@ -3,7 +3,7 @@ package com.example.cryptomanager_v2.data.model.exchangerates
 //import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-class RatesOld {
+class RatesDto {
 
     @SerializedName("BGN")
     var bgn: Double? = null

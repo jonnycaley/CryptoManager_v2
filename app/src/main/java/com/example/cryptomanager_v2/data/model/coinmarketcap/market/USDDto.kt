@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 import java.math.BigDecimal
 
-class USD : Serializable {
+class USDDto : Serializable {
 
     @SerializedName("total_market_cap")
     @Expose

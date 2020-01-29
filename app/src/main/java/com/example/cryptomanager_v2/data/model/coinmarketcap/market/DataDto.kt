@@ -3,7 +3,7 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 
-class Data : Serializable {
+class DataDto : Serializable {
 
     @SerializedName("btc_dominance")
     @Expose
@@ -25,7 +25,7 @@ class Data : Serializable {
     var lastUpdated: String? = null
     @SerializedName("quote")
     @Expose
-    var quote: Quote? = null
+    var quoteDto: QuoteDto? = null
 
     companion object {
         private const val serialVersionUID = -305119108882521200L

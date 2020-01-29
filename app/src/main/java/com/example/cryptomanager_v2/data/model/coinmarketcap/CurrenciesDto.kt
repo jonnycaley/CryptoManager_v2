@@ -4,17 +4,17 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 
-class Currencies : Serializable {
+class CurrenciesDto : Serializable {
 
     @SerializedName("status")
     @Expose
-    var status: Status? = null
+    var statusDto: StatusDto? = null
     @SerializedName("data")
     @Expose
     var data: List<Currency>? = null
 }
 
-class Status : Serializable {
+class StatusDto : Serializable {
 
     @SerializedName("timestamp")
     @Expose

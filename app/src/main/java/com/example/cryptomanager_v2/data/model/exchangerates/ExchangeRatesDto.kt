@@ -5,13 +5,13 @@ import com.google.gson.annotations.SerializedName
 import org.json.JSONException
 import org.json.JSONObject
 
-class ExchangeRatesOld {
+class ExchangeRatesDto {
 
     @SerializedName("base")
     var base: String? = null
 
     @SerializedName("rates")
-    var rates: RatesOld? = null
+    var rates: RatesDto? = null
 
     companion object {
         fun ratesToDBFiats(

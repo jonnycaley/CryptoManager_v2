@@ -6,7 +6,7 @@ import org.json.JSONException
 import org.json.JSONObject
 import org.json.JSONTokener
 
-class Exchange {
+class ExchangeDto {
     companion object {
         fun exchangesToDBExchanges(
             json: String

@@ -4,14 +4,14 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 
-class Market : Serializable {
+class MarketDto : Serializable {
 
     @SerializedName("data")
     @Expose
-    var data: Data? = null
+    var dataDto: DataDto? = null
     @SerializedName("status")
     @Expose
-    var status: Status? = null
+    var statusDto: StatusDto? = null
 
     companion object {
         private const val serialVersionUID = 5238751506793636051L
