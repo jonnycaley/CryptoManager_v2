@@ -8,6 +8,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.example.cryptomanager_v2.R
+import com.example.cryptomanager_v2.utils.nonNull
 import dagger.android.support.DaggerFragment
 import kotlinx.android.synthetic.main.fragment_markets.*
 import javax.inject.Inject
@@ -27,32 +28,19 @@ class MarketsFragment : DaggerFragment() {
         epoxy_recycler_markets.setController(marketsEpoxyController)
 
         viewModel = ViewModelProviders.of(this, factory)[MarketsViewModel::class.java]
-        viewModel.marketsData.observe(this, Observer {
-            updateMarketsDataState(it)
+        viewModel.marketsData
+            .nonNull()
+            .observe(this, Observer { marketData ->
+            updateMarketsDataState(marketData)
         })
     }
 
     private fun updateMarketsDataState(state: MarketsData) {
         showData(state)
-//        when (state.status) {
-//            is Status.ERROR -> {
-//
-//            }
-//            is Status.LOADING -> {
-//
-//            }
-//            is Status.IDLE -> {
-//
-//            }
-//            is Status.SUCCESS -> {
-//                state.data?.let { top100 ->
-//                    showTop100(top100)
-//                }
-//            }
-//        }.exhaustive
     }
-    private fun showData(data: MarketsData?) {
-        data?.let {
+
+    private fun showData(data: MarketsData) {
+        data.let {
             marketsEpoxyController.setData(data)
         }
     }
